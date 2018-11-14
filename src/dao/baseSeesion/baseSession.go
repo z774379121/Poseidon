@@ -8,6 +8,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"os"
 	"reflect"
+	"setting"
 	"strings"
 	"time"
 )
@@ -102,7 +103,7 @@ var jobAddUpCounter = make(map[string]int, DEFAULT_LIMIT_NUM)
 func DBInit() {
 	testDir, _ := os.Getwd()
 	log.Info("baseSession path=" + testDir)
-	InitBaseSession("myNewDB", "mongodb://user1:pwd1@localhost:27017/myNewDB")
+	InitBaseSession(setting.DBConfig.DatabaseName, fmt.Sprintf("mongodb://%s:%s@%s/%s", setting.DBConfig.UserName, setting.DBConfig.Password, setting.DBConfig.Host, setting.DBConfig.DatabaseName))
 	//if strings.Contains(testDir, "xm1804ServiceApp") {
 	//	//源码启动
 	//	InitBaseSession("xm1804", "mongodb://app1804:pwd1804@192.168.1.23:30017/xm1804")
@@ -142,7 +143,7 @@ func InitBaseSession(databaseName, url string) {
 	if err != nil {
 		panic(fmt.Sprintf("InitBaseSession发生错误：%v url:%s", err, url))
 	}
-	globalMgoSession.SetPoolLimit(300) //设置线程池上线
+	globalMgoSession.SetPoolLimit(setting.MongoDBMaxConnectionNum) //设置线程池上线
 	DataBaseName = databaseName
 }
 

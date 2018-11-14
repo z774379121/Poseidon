@@ -35,9 +35,12 @@ func GlobalInit() {
 	DevModel = sec.Key("IS_DEV_MODE").MustBool(false)
 	MongoDBMaxConnectionNum = sec.Key("MONGODB_MAX_CONNECTION_NUM").MustInt(300)
 	ServiceName = sec.Key("SERVICE_NAME").MustString("unKnow")
-	sec = Cfg.Section("DB")
+	if DevModel {
+		sec = Cfg.Section("DB")
+	} else {
+		sec = Cfg.Section("DBTianYi")
+	}
 	err = sec.MapTo(&DBConfig)
-	fmt.Println(DBConfig)
 	if err != nil {
 		fmt.Println(err)
 		return
