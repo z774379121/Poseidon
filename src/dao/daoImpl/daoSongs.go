@@ -1,7 +1,7 @@
 package daoImpl
 
 import (
-	"dao/baseSeesion"
+	"dao/baseSession"
 	"github.com/smallnest/rpcx/log"
 	"gopkg.in/mgo.v2/bson"
 	"models"
@@ -9,7 +9,7 @@ import (
 )
 
 type daoSongsImpl struct {
-	baseSeesion.BaseSession
+	baseSession.BaseSession
 }
 
 func NewDaoSongsImpl() *daoSongsImpl {

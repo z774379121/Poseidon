@@ -1,7 +1,7 @@
 package common
 
 import (
-	"github.com/waroyhz/rpcx/log"
+	"github.com/smallnest/rpcx/log"
 	"math/rand"
 	"reflect"
 	"strconv"
@@ -42,9 +42,8 @@ func GetMapFromStruct(inputstruct interface{}) map[string]string {
 }
 
 //生成随机字符串:长度要求小于32位
-func RandString() string {
+func RandString(length int) string {
 	rand.Seed(time.Now().UnixNano())
-	length := rand.Intn(22) + 10
 	rs := make([]string, length)
 	for start := 0; start < length; start++ {
 		t := rand.Intn(3)

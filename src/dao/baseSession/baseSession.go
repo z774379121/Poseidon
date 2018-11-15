@@ -1,4 +1,4 @@
-package baseSeesion
+package baseSession
 
 import (
 	"errors"

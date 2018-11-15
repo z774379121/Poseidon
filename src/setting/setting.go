@@ -13,6 +13,7 @@ var (
 	DevModel                bool
 	MongoDBMaxConnectionNum int
 	ServiceName             string
+	JWTSignKey              string
 	DBConfig                struct {
 		DatabaseName string
 		UserName     string
@@ -35,6 +36,7 @@ func GlobalInit() {
 	DevModel = sec.Key("IS_DEV_MODE").MustBool(false)
 	MongoDBMaxConnectionNum = sec.Key("MONGODB_MAX_CONNECTION_NUM").MustInt(300)
 	ServiceName = sec.Key("SERVICE_NAME").MustString("unKnow")
+	JWTSignKey = sec.Key("JWT_SIGNKEY").MustString("key")
 	if DevModel {
 		sec = Cfg.Section("DB")
 	} else {

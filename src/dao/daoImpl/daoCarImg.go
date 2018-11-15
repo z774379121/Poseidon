@@ -1,13 +1,13 @@
 package daoImpl
 
 import (
-	"dao/baseSeesion"
+	"dao/baseSession"
 	"gopkg.in/mgo.v2/bson"
 	"models"
 )
 
 type daoCarImgImpl struct {
-	baseSeesion.BaseSession
+	baseSession.BaseSession
 }
 
 func NewDaoCarImgImpl() *daoCarImgImpl {

@@ -2,9 +2,11 @@ package cmd
 
 import (
 	"bytes"
+	"controller"
 	"dao"
-	"dao/baseSeesion"
+	"dao/baseSession"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/urfave/cli"
@@ -13,6 +15,7 @@ import (
 	"models"
 	"net/http"
 	"os"
+	"service"
 	"setting"
 	"time"
 )
@@ -36,10 +39,28 @@ func runWeb(context *cli.Context) error {
 	}
 	setting.CfgFileName = CfgFile
 	setting.GlobalInit()
-	baseSeesion.DBInit()
+	baseSession.DBInit()
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.GET("/", service.Hello)
+	e.POST("/signUp", service.SignUp)
+	e.POST("/login", service.Login)
+	admin := e.Group("/admin")
+	{
+		admin.Use(ServiceController)
+		admin.GET("/", func(context echo.Context) error {
+			return context.String(http.StatusOK, "welcome, admin")
+		})
+	}
+	l := e.Group("/auth")
+	{
+		l.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+			SigningKey:  []byte(setting.JWTSignKey),
+			TokenLookup: "query:token",
+		}))
+		l.GET("/", restricted)
+	}
 	g := e.Group("/v1")
 	{
 		g.GET("/", func(context echo.Context) error {
@@ -128,4 +149,28 @@ func runWeb(context *cli.Context) error {
 	e.Logger.Fatal(e.Start(setting.Port))
 	return nil
 
+}
+
+func restricted(c echo.Context) error {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	name := claims["name"].(string)
+	return c.String(http.StatusOK, "Welcome "+name+"!")
+}
+
+func ServiceController(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(context echo.Context) error {
+		ctl := new(controller.BaseController)
+		ctl.C = context
+		token := ctl.GetUserToken()
+		if token == "" {
+			return ctl.C.String(http.StatusUnauthorized, "请先登录")
+		}
+		daoUser := dao.NewDaoUser()
+		user := daoUser.SelectByAppToken(token)
+		if user == nil {
+			return ctl.C.String(http.StatusUnauthorized, "非法token")
+		}
+		return next(context)
+	}
 }

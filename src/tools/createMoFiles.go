@@ -16,9 +16,10 @@ import (
 
 type modules struct {
 	songs models.Songs
+	user  models.User
 }
 
-var pathMO = "/mdb/src/models/modelsDefine"
+var pathMO = "/src/models/modelsDefine"
 var path string
 
 func main() {

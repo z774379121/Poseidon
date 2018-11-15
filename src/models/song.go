@@ -1,7 +1,7 @@
 package models
 
 import (
-	"dao/baseSeesion"
+	"dao/baseSession"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"time"
@@ -21,7 +21,7 @@ type Songs struct {
 
 func NewSongs() *Songs {
 	LyrRef := &mgo.DBRef{
-		Database:   baseSeesion.DataBaseName,
+		Database:   baseSession.DataBaseName,
 		Collection: "",
 	}
 	newObj := &Songs{}
