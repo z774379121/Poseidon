@@ -44,6 +44,7 @@ func runWeb(context *cli.Context) error {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.GET("/", service.Hello)
+	e.GET("/dp", service.DP)
 	e.POST("/signUp", service.SignUp)
 	e.POST("/login", service.Login)
 	admin := e.Group("/admin")
@@ -52,6 +53,7 @@ func runWeb(context *cli.Context) error {
 		admin.GET("/", func(context echo.Context) error {
 			return context.String(http.StatusOK, "welcome, admin")
 		})
+		admin.GET("/logout", service.Logout)
 	}
 	l := e.Group("/auth")
 	{

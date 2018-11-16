@@ -53,3 +53,9 @@ func (this *BaseController) SetCookies() {
 	this.C.SetCookie(&http.Cookie{Name: Key_cookie_Time, Value: time.Now().Format("20060102150405"), Expires: time.Now().Add(time.Hour * 2)})
 	this.C.SetCookie(&http.Cookie{Name: Key_cookie_Token_Type, Value: this.TokenType, Expires: time.Now().Add(time.Hour * 2)})
 }
+
+func (this *BaseController) ClearCookies() {
+	this.C.SetCookie(&http.Cookie{Name: Key_cookie_UserToken, Value: "", Expires: time.Now()})
+	this.C.SetCookie(&http.Cookie{Name: Key_cookie_Time, Value: "", Expires: time.Now()})
+	this.C.SetCookie(&http.Cookie{Name: Key_cookie_Token_Type, Value: "", Expires: time.Now()})
+}

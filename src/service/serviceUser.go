@@ -3,6 +3,7 @@ package service
 import (
 	"controller"
 	"dao"
+	"dao/baseSession"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
@@ -67,6 +68,21 @@ func Login(ctx echo.Context) error {
 	}
 }
 
+func Logout(ctx echo.Context) error {
+	ctl := controller.NewBaseController(ctx)
+	ctl.ClearCookies()
+	daoUser := dao.NewDaoUser()
+	user := daoUser.SelectByAppToken(ctl.GetUserToken())
+	if user == nil {
+		return ctx.String(http.StatusForbidden, "非法token")
+	}
+	ok := daoUser.UpdateSessionAndToken(user.Id_, "", "")
+	if !ok {
+		return ctx.String(http.StatusInternalServerError, "清空token失败")
+	}
+	return ctx.String(http.StatusOK, "logout")
+}
+
 func Hello(ctx echo.Context) error {
 	ctx.Response().After(func() {
 		fmt.Println("after return")
@@ -75,4 +91,11 @@ func Hello(ctx echo.Context) error {
 		fmt.Println("before return")
 	})
 	return ctx.HTML(http.StatusOK, "<strong>Hello, World!</strong>")
+}
+
+func DP(ctx echo.Context) error {
+	if baseSession.DumpData() == nil {
+		return ctx.String(http.StatusOK, "pong")
+	}
+	return ctx.String(http.StatusInternalServerError, "down")
 }

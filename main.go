@@ -16,6 +16,8 @@ func main() {
 	app.Version = APP_VER
 	app.Commands = []cli.Command{
 		cmd.Web,
+		cmd.BackUp,
+		cmd.Restore,
 	}
 	app.Run(os.Args)
 }

@@ -166,6 +166,10 @@ func OrderDesc(field string) string {
 //	this.gridFS = this.GetGridFS(DataBaseName, collection)
 //}
 
+func DumpData() error {
+	return globalMgoSession.Ping()
+}
+
 func (this *BaseSession) ConnectSessionGridFS() {
 	this.sessionGridFs = this.GetSession()
 	this.gridFS = this.GetGridFS(DataBaseName, this.collectionName)
