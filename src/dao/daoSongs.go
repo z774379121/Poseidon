@@ -2,7 +2,7 @@ package dao
 
 import (
 	"dao/daoImpl"
-	"models"
+	"github.com/z774379121/untitled1/src/models"
 )
 
 type daoSongs interface {

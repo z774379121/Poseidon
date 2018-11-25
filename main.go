@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./src/cmd"
+	"github.com/z774379121/untitled1/src/cmd"
 	"github.com/urfave/cli"
 	"os"
 	"setting"

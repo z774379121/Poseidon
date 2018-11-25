@@ -7,16 +7,36 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
-	"models"
+	"github.com/z774379121/untitled1/src/models"
 	"net/http"
 	"setting"
 	"time"
+	"html/template"
+	"io"
+	"bufio"
+	"strings"
+	"github.com/smallnest/rpcx/log"
+	"os"
 )
 
+type TemplateRenderer struct {
+	Templates *template.Template
+}
+
+func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	return t.Templates.ExecuteTemplate(w, name, data)
+}
+
+
 func SignUp(context echo.Context) error {
-	userName := context.FormValue("userName")
-	pwd := context.FormValue("passWord")
+	userName := context.FormValue("username")
+	pwd := context.FormValue("password")
+	pwd1 := context.FormValue("password1")
 	email := context.FormValue("email")
+	fmt.Println(pwd,pwd1)
+	if pwd1 != pwd {
+		return context.HTML(http.StatusBadRequest, "<script>alert('密码不一致');</script>")
+	}
 	daoUser := dao.NewDaoUser()
 	user := daoUser.SelectByEmail(email)
 	if user != nil {
@@ -35,6 +55,7 @@ func SignUp(context echo.Context) error {
 	// Set claims
 	claims := token.Claims.(jwt.MapClaims)
 	claims["name"] = userName
+	claims["email"] = email
 	claims["admin"] = true
 	claims["exp"] = time.Now().Add(time.Hour * 2).Unix()
 
@@ -47,7 +68,7 @@ func SignUp(context echo.Context) error {
 }
 
 func Login(ctx echo.Context) error {
-	pwd := ctx.FormValue("passWord")
+	pwd := ctx.FormValue("password")
 	email := ctx.FormValue("email")
 	daoUser := dao.NewDaoUser()
 	user := daoUser.SelectByEmail(email)
@@ -98,4 +119,62 @@ func DP(ctx echo.Context) error {
 		return ctx.String(http.StatusOK, "pong")
 	}
 	return ctx.String(http.StatusInternalServerError, "down")
+}
+
+func LoginH(ctx echo.Context) error{
+	return ctx.Render(http.StatusOK, "index.html", nil)
+}
+
+func SignUpH(context echo.Context) error {
+	return context.Redirect(http.StatusMovedPermanently, "/login#toregister")
+}
+
+func C(context echo.Context) error {
+	if err := baseSession.DumpData(); err != nil{
+		log.Fatal(err)
+	}
+	daoActor := dao.NewDaoActor()
+
+	oo := models.NewActor()
+	oo.Name = "test"
+	b := daoActor.InsertModel(oo)
+	if !b {
+		log.Fatal("插入失败")
+	}
+	fi, err := os.Open("C:/Users/JJ/Desktop/code/ag.txt")
+	if err != nil {
+		fmt.Printf("Error: %s\n", err)
+		return err
+	}
+	defer fi.Close()
+
+	br := bufio.NewReader(fi)
+	lines := [103]*[]models.Actor{}
+	for i := 0; i < len(lines); i++ {
+		lines[i] = &[]models.Actor{}
+	}
+	count := 0
+	for {
+		a, _, c := br.ReadLine()
+		if c == io.EOF {
+			break
+		}
+		avatar_name := strings.Split(string(a), "#")
+		avatar, name := avatar_name[0], avatar_name[1]
+		obj := models.NewActor()
+		obj.Name = name
+		obj.Avatar = avatar
+		index := count / 100
+		*lines[index] = append(*lines[index], *obj)
+		count += 1
+	}
+	fmt.Println(len(lines))
+	for i := 0; i < len(lines); i++ {
+		insertModels := daoActor.InsertModels(lines[i])
+		if !insertModels {
+			log.Fatal("插入失败")
+		}
+		fmt.Println("插入成功", i)
+	}
+	return nil
 }

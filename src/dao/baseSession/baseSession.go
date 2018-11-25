@@ -145,9 +145,11 @@ func InitBaseSession(databaseName, url string) {
 	}
 	globalMgoSession.SetPoolLimit(setting.MongoDBMaxConnectionNum) //设置线程池上线
 	DataBaseName = databaseName
+	log.Info(globalMgoSession.Ping())
 }
 
 func (*BaseSession) GetSession() *mgo.Session {
+	//return globalMgoSession
 	session := globalMgoSession.Clone()
 	return session
 }

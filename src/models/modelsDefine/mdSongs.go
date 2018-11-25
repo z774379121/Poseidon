@@ -1,7 +1,6 @@
 package modelsDefine
-
 /*
-	模型枚举文件，请勿修改！
+		模型枚举文件，请勿修改！
 */
 const MDSongs_Id_ string = "_id"
 const MDSongs_Name string = "name"

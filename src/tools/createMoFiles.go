@@ -11,12 +11,12 @@ import (
 	"regexp"
 	"strings"
 	"xm/common/disk"
-	"xm/common/shell"
 )
 
 type modules struct {
 	songs models.Songs
 	user  models.User
+	actor models.Actor
 }
 
 var pathMO = "/src/models/modelsDefine"
@@ -25,7 +25,7 @@ var path string
 func main() {
 	fmt.Println("模型枚举生成工具!")
 
-	path = shell.GetCurrentPath()
+	path, _ = os.Getwd()
 	fmt.Printf("当前路径：%s\n", path)
 	path = strings.Replace(path, "\n", "", -1) + pathMO
 

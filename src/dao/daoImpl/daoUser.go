@@ -4,7 +4,7 @@ import (
 	"dao/baseSession"
 	"github.com/smallnest/rpcx/log"
 	"gopkg.in/mgo.v2/bson"
-	"models"
+	"github.com/z774379121/untitled1/src/models"
 	"models/modelsDefine"
 )
 
@@ -33,6 +33,17 @@ func (this *daoUserImp) SelectByEmail(email string) *models.User {
 	result := &models.User{}
 
 	err := this.FindOne(bson.M{modelsDefine.MDUser_Email: email, modelsDefine.MDUser_IsConfirmed: true}, result)
+	if err != nil {
+		log.Error(err, email)
+		return nil
+	}
+	return result
+}
+
+func (this *daoUserImp) SelectByEmailAll(email string) *models.User {
+	result := &models.User{}
+
+	err := this.FindOne(bson.M{modelsDefine.MDUser_Email: email}, result)
 	if err != nil {
 		log.Error(err, email)
 		return nil
@@ -84,6 +95,17 @@ func (this *daoUserImp) InsertModel(m *models.User) bool {
 func (this *daoUserImp) UpdateUserPassword(id bson.ObjectId, newPassword string) bool {
 	if err := this.Update(bson.M{modelsDefine.MDUser_Id_: id},
 		bson.M{baseSession.MGO_UPDATE_SET: bson.M{modelsDefine.MDUser_Password: newPassword}},
+	); err != nil {
+		log.Error(err, id)
+		return false
+	} else {
+		return true
+	}
+}
+
+func (this *daoUserImp) UpdateUserEmailCheck(id bson.ObjectId) bool {
+	if err := this.Update(bson.M{modelsDefine.MDUser_Id_: id},
+		bson.M{baseSession.MGO_UPDATE_SET: bson.M{modelsDefine.MDUser_IsConfirmed: true}},
 	); err != nil {
 		log.Error(err, id)
 		return false

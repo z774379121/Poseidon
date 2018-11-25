@@ -12,12 +12,13 @@ import (
 	"github.com/urfave/cli"
 	"gopkg.in/mgo.v2/bson"
 	"io"
-	"models"
+	"github.com/z774379121/untitled1/src/models"
 	"net/http"
 	"os"
 	"service"
 	"setting"
 	"time"
+	"html/template"
 )
 
 var Web = cli.Command{
@@ -40,13 +41,21 @@ func runWeb(context *cli.Context) error {
 	setting.CfgFileName = CfgFile
 	setting.GlobalInit()
 	baseSession.DBInit()
+	t := &service.TemplateRenderer{
+		Templates: template.Must(template.ParseGlob("src/view/*.html")),
+	}
 	e := echo.New()
+	e.Static("/", "src/view")
+	e.Renderer = t
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.GET("/", service.Hello)
 	e.GET("/dp", service.DP)
 	e.POST("/signUp", service.SignUp)
+	e.GET("/signUp", service.SignUpH)
 	e.POST("/login", service.Login)
+	e.GET("/login", service.LoginH)
+	//e.GET("/c", service.C)
 	admin := e.Group("/admin")
 	{
 		admin.Use(ServiceController)
@@ -157,6 +166,13 @@ func restricted(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	name := claims["name"].(string)
+	email := claims["email"].(string)
+	daoUser := dao.NewDaoUser()
+	muser := daoUser.SelectByEmailAll(email)
+	if !daoUser.UpdateUserEmailCheck(muser.Id_) {
+		return c.String(http.StatusOK, "认证失败")
+	}
+
 	return c.String(http.StatusOK, "Welcome "+name+"!")
 }
 

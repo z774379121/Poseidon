@@ -3,7 +3,7 @@ package daoImpl
 import (
 	"dao/baseSession"
 	"gopkg.in/mgo.v2/bson"
-	"models"
+	"github.com/z774379121/untitled1/src/models"
 )
 
 type daoCarImgImpl struct {

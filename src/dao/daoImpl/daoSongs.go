@@ -4,7 +4,7 @@ import (
 	"dao/baseSession"
 	"github.com/smallnest/rpcx/log"
 	"gopkg.in/mgo.v2/bson"
-	"models"
+	"github.com/z774379121/untitled1/src/models"
 	"models/modelsDefine"
 )
 

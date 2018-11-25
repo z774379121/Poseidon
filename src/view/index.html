@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6 lt8"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="no-js ie7 lt8"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="no-js ie8 lt8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="UTF-8" />
+        <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  -->
+        <title>Login and Registration Form with HTML5 and CSS3</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <meta name="description" content="Login and Registration Form with HTML5 and CSS3" />
+        <meta name="keywords" content="html5, css3, form, switch, animation, :target, pseudo-class" />
+        <meta name="author" content="Codrops" />
+        <link rel="shortcut icon" href="../favicon.ico"> 
+        <link rel="stylesheet" type="text/css" href="css/demo.css" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+		<link rel="stylesheet" type="text/css" href="css/animate-custom.css" />
+    </head>
+    <body>
+        <div class="container">
+
+            <header>
+                <script type="text/javascript">
+                    var Flag4;
+                    var Flag5;
+                    function insertManager() {
+                        var password = document.getElementById("passwordsignup").value;
+                        var repassword = document.getElementById("passwordsignup_confirm").value;
+                             if(password!=repassword){
+                                 window.alert("您输入的新密码与确认密码确认不一致");
+                                 register.passwordsignup_confirm.focus();
+                                 return false;
+                                 
+                                 }
+                              return true;
+                        }
+                    
+                    function checkPwd(password) {
+                        /*获取提示框*/
+                        var passwordMSG = document.getElementById("passwordMSG");
+                        /*定义正则表达式*/
+                        var reg = /^[a-zA-Z]\w{5,19}$/;
+                        var flag = reg.test(password);
+                        if ( !flag ) {
+                            passwordMSG.innerHTML = "<font color='red'>密码格式有误！</font>";
+                            Flag4 = false;
+                        } else {
+                            passwordMSG.innerHTML = "<font color='green'><b>√</b></font>";
+                            Flag4 = true;
+                        }
+                    }
+                    
+                    var timeoutID;
+                    function checkPwd2(pwd2) {
+                        /*获取提示框*/
+                        var mm2MSG = document.getElementById("mm2MSG");
+                        /*获取第一个框输入的密码*/
+                        var pwd1 = document.getElementById("passwordsignup").value;
+                        //对上次未完成的延时操作进行取消
+                        clearTimeout(timeoutID);
+                        //对于密码比对延迟500ms，避免频繁比对
+                        timeoutID = setTimeout(function(){
+                            /*进行比对*/
+                            if(pwd1 != pwd2){
+                                Flag5 = false;
+                                mm2MSG.innerHTML = "<font color='red'>两次输入的密码不一致！</font>";
+                            } else {
+                                Flag5 = true;
+                                mm2MSG.innerHTML = "<font color='green'><b>√</b></font>";
+                            }
+                        },500);
+                    }
+                    function CheckPost() {
+                        return Flag4 && Flag5;
+                    }
+                </script>
+
+            </header>
+<div style="text-align:center;clear:both;">
+<script src="/gg_bd_ad_720x90.js" type="text/javascript"></script>
+<script src="/follow.js" type="text/javascript"></script>
+</div>
+            <section>				
+                <div id="container_demo" >
+                    <!-- hidden anchor to stop jump http://www.css3create.com/Astuce-Empecher-le-scroll-avec-l-utilisation-de-target#wrap4  -->
+                    <a class="hiddenanchor" id="toregister"></a>
+                    <a class="hiddenanchor" id="tologin"></a>
+                    <div id="wrapper">
+                        <div id="login" class="animate form">
+                            <form  action="/login" method="post"> 
+                                <h1>Log in</h1> 
+                                <p> 
+                                    <label for="email" class="email" data-icon="u" > Your email </label>
+                                    <input id="email" name="email" required="required" type="email" placeholder=" mymail@mail.com"/>
+                                </p>
+                                <p> 
+                                    <label for="password" class="youpasswd" data-icon="p"> Your password </label>
+                                    <input id="password" name="password" required="required" type="password" placeholder="eg. X8df!90EO" /> 
+                                </p>
+                                <p class="keeplogin"> 
+									<input type="checkbox" name="loginkeeping" id="loginkeeping" value="loginkeeping" /> 
+									<label for="loginkeeping">Keep me logged in</label>
+								</p>
+                                <p class="login button"> 
+                                    <input type="submit" value="Login" /> 
+								</p>
+                                <p class="change_link">
+									Not a member yet ?
+									<a href="#toregister" class="to_register">Join us</a>
+								</p>
+                            </form>
+                        </div>
+
+                        <div id="register" class="animate form">
+                            <form  action="/signUp" method="post" onsubmit="return CheckPost();"> 
+                                <h1> Sign up </h1> 
+                                <p> 
+                                    <label for="usernamesignup" class="uname" data-icon="u">Your username</label>
+                                    <input id="usernamesignup" name="username" required="required" type="text" placeholder="mysuperusername690" />
+                                </p>
+                                <p> 
+                                    <label for="emailsignup" class="youmail" data-icon="e" > Your email</label>
+                                    <input id="emailsignup" name="emailsignup" required="required" type="email" placeholder="mysupermail@mail.com"/> 
+                                </p>
+                                <p> 
+                                    <label for="passwordsignup" class="youpasswd" data-icon="p"> Your password <font id="passwordMSG"></font></label>
+                                    <input id="passwordsignup" name="password" required onblur="checkPwd(this.value)" type="password" placeholder="eg. X8df!90EO"/>
+                                </p>
+                                <p> 
+                                    <label for="passwordsignup_confirm" class="youpasswd" data-icon="p">Please confirm your password <font id="mm2MSG"></font> </label>
+                                    <input id="passwordsignup_confirm" name="password1" required oninput="checkPwd2(this.value)" type="password" placeholder="eg. X8df!90EO"/>
+                                </p>
+                                <p class="signin button"> 
+									<input type="submit" value="Sign up" /> 
+								</p>
+                                <p class="change_link">  
+									Already a member ?
+									<a href="#tologin" class="to_register"> Go and log in </a>
+								</p>
+                            </form>
+                        </div>
+						
+                    </div>
+                </div>  
+            </section>
+        </div>
+
+  
+	</body>
+   
+</html>

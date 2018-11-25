@@ -3,7 +3,7 @@ package dao
 import (
 	"dao/daoImpl"
 	"gopkg.in/mgo.v2/bson"
-	"models"
+	"github.com/z774379121/untitled1/src/models"
 )
 
 type daoUser interface {
@@ -11,9 +11,11 @@ type daoUser interface {
 	TotalCount(m bson.M) int
 	UpdateSessionAndToken(id bson.ObjectId, session, token string) bool
 	SelectByEmail(email string) *models.User
+	SelectByEmailAll(email string) *models.User
 	InsertModel(m *models.User) bool
 	SelectByAppToken(appToken string) *models.User
 	UpdateUserPassword(id bson.ObjectId, newPassword string) bool
+	UpdateUserEmailCheck(id bson.ObjectId) bool
 }
 
 var testDaoUser daoUser
