@@ -1,13 +1,13 @@
 package cmd
 
 import (
-	"dao/baseSession"
 	"fmt"
 	"github.com/mongodb/mongo-tools/common/db"
 	"github.com/mongodb/mongo-tools/common/options"
 	"github.com/mongodb/mongo-tools/mongorestore"
 	"github.com/urfave/cli"
-	"setting"
+	"github.com/z774379121/untitled1/src/dao/baseSession"
+	"github.com/z774379121/untitled1/src/setting"
 	"strings"
 )
 

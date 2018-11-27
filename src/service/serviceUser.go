@@ -1,22 +1,22 @@
 package service
 
 import (
-	"controller"
-	"dao"
-	"dao/baseSession"
+	"bufio"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
+	"github.com/smallnest/rpcx/log"
+	"github.com/z774379121/untitled1/src/controller"
+	"github.com/z774379121/untitled1/src/dao"
+	"github.com/z774379121/untitled1/src/dao/baseSession"
 	"github.com/z774379121/untitled1/src/models"
-	"net/http"
-	"setting"
-	"time"
+	"github.com/z774379121/untitled1/src/setting"
 	"html/template"
 	"io"
-	"bufio"
-	"strings"
-	"github.com/smallnest/rpcx/log"
+	"net/http"
 	"os"
+	"strings"
+	"time"
 )
 
 type TemplateRenderer struct {
@@ -27,13 +27,12 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 	return t.Templates.ExecuteTemplate(w, name, data)
 }
 
-
 func SignUp(context echo.Context) error {
 	userName := context.FormValue("username")
 	pwd := context.FormValue("password")
 	pwd1 := context.FormValue("password1")
 	email := context.FormValue("email")
-	fmt.Println(pwd,pwd1)
+	fmt.Println(pwd, pwd1)
 	if pwd1 != pwd {
 		return context.HTML(http.StatusBadRequest, "<script>alert('密码不一致');</script>")
 	}
@@ -41,6 +40,10 @@ func SignUp(context echo.Context) error {
 	user := daoUser.SelectByEmail(email)
 	if user != nil {
 		return context.String(http.StatusForbidden, "邮箱已经被使用")
+	}
+	user = daoUser.SelectByEmailAll(email)
+	if user != nil {
+		return context.String(http.StatusUnauthorized, "账号已经注册,请前往邮箱确认")
 	}
 	user = models.NewUser()
 	user.Password = pwd
@@ -71,16 +74,19 @@ func Login(ctx echo.Context) error {
 	pwd := ctx.FormValue("password")
 	email := ctx.FormValue("email")
 	daoUser := dao.NewDaoUser()
-	user := daoUser.SelectByEmail(email)
-	if user == nil {
-		return ctx.String(http.StatusForbidden, "邮箱未注册或未进行验证")
+	userWithoutCheck := daoUser.SelectByEmailAll(email)
+	if userWithoutCheck == nil {
+		return ctx.String(http.StatusForbidden, "邮箱不存在")
 	}
-	if user.ValidatePassword(pwd) {
-		user.GenUserToken()
+	if !userWithoutCheck.IsConfirmed {
+		return ctx.String(http.StatusUnauthorized, "邮箱未确认")
+	}
+	if userWithoutCheck.ValidatePassword(pwd) {
+		userWithoutCheck.GenUserToken()
 		ctl := controller.NewBaseController(ctx)
-		ctl.SetToken("user", user.GetAppToken())
+		ctl.SetToken("user", userWithoutCheck.GetAppToken())
 		ctl.SetCookies()
-		if !daoUser.UpdateSessionAndToken(user.Id_, user.Session, user.Token) {
+		if !daoUser.UpdateSessionAndToken(userWithoutCheck.Id_, userWithoutCheck.Session, userWithoutCheck.Token) {
 			return ctx.String(http.StatusInternalServerError, "err")
 		}
 		return ctx.Redirect(http.StatusMovedPermanently, "/")
@@ -121,7 +127,7 @@ func DP(ctx echo.Context) error {
 	return ctx.String(http.StatusInternalServerError, "down")
 }
 
-func LoginH(ctx echo.Context) error{
+func LoginH(ctx echo.Context) error {
 	return ctx.Render(http.StatusOK, "index.html", nil)
 }
 
@@ -130,7 +136,7 @@ func SignUpH(context echo.Context) error {
 }
 
 func C(context echo.Context) error {
-	if err := baseSession.DumpData(); err != nil{
+	if err := baseSession.DumpData(); err != nil {
 		log.Fatal(err)
 	}
 	daoActor := dao.NewDaoActor()

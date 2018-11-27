@@ -3,14 +3,14 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/z774379121/untitled1/src/models"
+	"github.com/z774379121/untitled1/src/xm/common/disk"
 	"log"
-	"models"
 	"os"
 	"path/filepath"
 	"reflect"
 	"regexp"
 	"strings"
-	"xm/common/disk"
 )
 
 type modules struct {

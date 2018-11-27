@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"dao/daoImpl"
+	"github.com/z774379121/untitled1/src/dao/daoImpl"
 	"github.com/z774379121/untitled1/src/models"
 )
 

@@ -1,7 +1,7 @@
 package models
 
 import (
-	"dao/baseSession"
+	"github.com/z774379121/untitled1/src/dao/baseSession"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"time"

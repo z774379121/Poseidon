@@ -1,9 +1,9 @@
 package dao
 
 import (
-	"dao/daoImpl"
-	"gopkg.in/mgo.v2/bson"
+	"github.com/z774379121/untitled1/src/dao/daoImpl"
 	"github.com/z774379121/untitled1/src/models"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type daoUser interface {

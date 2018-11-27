@@ -4,10 +4,10 @@ import (
 	"crypto/sha256"
 	"crypto/subtle"
 	"fmt"
+	"github.com/z774379121/untitled1/src/xm/common"
 	"golang.org/x/crypto/pbkdf2"
 	"gopkg.in/mgo.v2/bson"
 	"time"
-	"xm/common"
 )
 
 const COLLECTION_NAME_User string = "users"

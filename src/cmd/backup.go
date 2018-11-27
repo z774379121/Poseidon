@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"dao/baseSession"
 	"fmt"
 	"github.com/Unknwon/cae/zip"
 	"github.com/mongodb/mongo-tools/common/log"
@@ -9,11 +8,12 @@ import (
 	"github.com/mongodb/mongo-tools/common/util"
 	"github.com/mongodb/mongo-tools/mongodump"
 	"github.com/urfave/cli"
+	"github.com/z774379121/untitled1/src/dao/baseSession"
+	"github.com/z774379121/untitled1/src/setting"
 	"io/ioutil"
 	"os"
 	path2 "path"
 	"path/filepath"
-	"setting"
 	"strings"
 	"time"
 )

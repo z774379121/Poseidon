@@ -4,11 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/smallnest/rpcx/log"
+	"github.com/z774379121/untitled1/src/setting"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"os"
 	"reflect"
-	"setting"
 	"strings"
 	"time"
 )

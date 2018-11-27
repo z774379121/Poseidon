@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/z774379121/untitled1/src/cmd"
 	"github.com/urfave/cli"
+	"github.com/z774379121/untitled1/src/cmd"
+	"github.com/z774379121/untitled1/src/setting"
 	"os"
-	"setting"
 )
 
 const APP_VER = "0.0.1"

@@ -2,23 +2,23 @@ package cmd
 
 import (
 	"bytes"
-	"controller"
-	"dao"
-	"dao/baseSession"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/urfave/cli"
-	"gopkg.in/mgo.v2/bson"
-	"io"
+	"github.com/z774379121/untitled1/src/controller"
+	"github.com/z774379121/untitled1/src/dao"
+	"github.com/z774379121/untitled1/src/dao/baseSession"
 	"github.com/z774379121/untitled1/src/models"
+	"github.com/z774379121/untitled1/src/service"
+	"github.com/z774379121/untitled1/src/setting"
+	"gopkg.in/mgo.v2/bson"
+	"html/template"
+	"io"
 	"net/http"
 	"os"
-	"service"
-	"setting"
 	"time"
-	"html/template"
 )
 
 var Web = cli.Command{

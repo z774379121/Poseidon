@@ -1,11 +1,11 @@
 package daoImpl
 
 import (
-	"dao/baseSession"
 	"github.com/smallnest/rpcx/log"
-	"gopkg.in/mgo.v2/bson"
+	"github.com/z774379121/untitled1/src/dao/baseSession"
 	"github.com/z774379121/untitled1/src/models"
-	"models/modelsDefine"
+	"github.com/z774379121/untitled1/src/models/modelsDefine"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type daoUserImp struct {
