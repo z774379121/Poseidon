@@ -153,7 +153,10 @@ func runWeb(context *cli.Context) error {
 			}
 			daoFileContent := dao.NewDaoBTFileContent()
 			if daoFileContent.UpdateRealFileName(name, avatar.Filename) {
-				return context.String(http.StatusOK, name)
+				return context.JSON(http.StatusOK, map[string]interface{}{
+					"msg":"ok",
+					"name":name,
+				})
 			}
 			return context.String(http.StatusBadRequest, "更新名字失败")
 		})
