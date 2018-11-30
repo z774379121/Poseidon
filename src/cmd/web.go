@@ -44,7 +44,11 @@ func runWeb(context *cli.Context) error {
 	t := &service.TemplateRenderer{
 		Templates: template.Must(template.ParseGlob("src/view/*.html")),
 	}
+	echo.NotFoundHandler = func(c echo.Context) error {
+		return c.File("src/view/404.html")
+	}
 	e := echo.New()
+	//e.File("favicon.ico", "/images/play.ico")
 	e.Static("/", "src/view")
 	e.Renderer = t
 	e.Use(middleware.Logger())
@@ -55,6 +59,9 @@ func runWeb(context *cli.Context) error {
 	e.GET("/signUp", service.SignUpH)
 	e.POST("/login", service.Login)
 	e.GET("/login", service.LoginH)
+	e.GET("/boot", service.Boot)
+	e.GET("/actor/:id", service.GetActor)
+	e.GET("/actor", service.GetActorRegex)
 	//e.GET("/c", service.C)
 	admin := e.Group("/admin")
 	{
@@ -64,6 +71,7 @@ func runWeb(context *cli.Context) error {
 		})
 		admin.GET("/logout", service.Logout)
 	}
+
 	l := e.Group("/auth")
 	{
 		l.Use(middleware.JWTWithConfig(middleware.JWTConfig{
@@ -72,6 +80,7 @@ func runWeb(context *cli.Context) error {
 		}))
 		l.GET("/", restricted)
 	}
+
 	g := e.Group("/v1")
 	{
 		g.GET("/", func(context echo.Context) error {
@@ -96,6 +105,7 @@ func runWeb(context *cli.Context) error {
 
 			return context.String(http.StatusOK, fmt.Sprintf("hello from web %s", name))
 		})
+
 		g.POST("/songs", func(context echo.Context) error {
 			name := context.FormValue("name")
 			singer := context.FormValue("singer")
@@ -108,6 +118,7 @@ func runWeb(context *cli.Context) error {
 			}
 			return context.String(http.StatusOK, "插入成功")
 		})
+
 		g.POST("/upload", func(context echo.Context) error {
 			avatar, err := context.FormFile("avatar")
 			if err != nil {

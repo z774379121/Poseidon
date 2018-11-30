@@ -1,9 +1,9 @@
 package dao
 
 import (
-	"gopkg.in/mgo.v2/bson"
 	"github.com/z774379121/untitled1/src/dao/daoImpl"
 	"github.com/z774379121/untitled1/src/models"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type daoActor interface {
@@ -12,6 +12,9 @@ type daoActor interface {
 	InsertModel(m *models.Actor) bool
 	SelectByName(name string) *models.Actor
 	InsertModels(m *[]models.Actor) bool
+	UpdateModel(m *models.Actor) bool
+	SelectByPage(page int) *[]models.Actor
+	SelectLikeByName(name string) *[]models.Actor
 }
 
 var testDaoActor daoActor

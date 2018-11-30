@@ -113,3 +113,7 @@ func (this *daoUserImp) UpdateUserEmailCheck(id bson.ObjectId) bool {
 		return true
 	}
 }
+
+func (this *daoUserImp) SelectUserByPage(page int) *[]models.User {
+	return this.BaseSession.SelectByPagination(bson.M{modelsDefine.MDUser_IsConfirmed: true}, page, 10).(*[]models.User)
+}

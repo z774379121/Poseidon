@@ -16,6 +16,7 @@ type daoUser interface {
 	SelectByAppToken(appToken string) *models.User
 	UpdateUserPassword(id bson.ObjectId, newPassword string) bool
 	UpdateUserEmailCheck(id bson.ObjectId) bool
+	SelectUserByPage(page int) *[]models.User
 }
 
 var testDaoUser daoUser

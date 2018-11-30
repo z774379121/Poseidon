@@ -1,6 +1,7 @@
 package daoImpl
 
 import (
+	"fmt"
 	"github.com/smallnest/rpcx/log"
 	"github.com/z774379121/untitled1/src/dao/baseSession"
 	"github.com/z774379121/untitled1/src/models"
@@ -56,4 +57,17 @@ func (this *daoActorImp) InsertModel(m *models.Actor) bool {
 
 func (this *daoActorImp) InsertModels(m *[]models.Actor) bool {
 	return this.BaseSession.InsertManyModel(m)
+}
+
+func (this *daoActorImp) UpdateModel(m *models.Actor) bool {
+	return this.BaseSession.UpdateModel(m.Id_, m)
+}
+
+func (this *daoActorImp) SelectByPage(page int) *[]models.Actor {
+	return this.BaseSession.SelectByPagination(bson.M{modelsDefine.MDActor_Avatar: bson.M{baseSession.MGO_SELECT_NE: ""}}, page, 24).(*[]models.Actor)
+}
+
+func (this *daoActorImp) SelectLikeByName(name string) *[]models.Actor {
+	result := this.BaseSession.SelectByPagination(bson.M{modelsDefine.MDActor_Name: bson.M{baseSession.MGO_SELECT_REGEX: fmt.Sprintf("^%s", name)}}, 0, 30)
+	return result.(*[]models.Actor)
 }
