@@ -2,13 +2,15 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/Unknwon/cae/zip"
 	"github.com/mongodb/mongo-tools/common/db"
 	"github.com/mongodb/mongo-tools/common/options"
 	"github.com/mongodb/mongo-tools/mongorestore"
 	"github.com/urfave/cli"
 	"github.com/z774379121/untitled1/src/dao/baseSession"
 	"github.com/z774379121/untitled1/src/setting"
-	"strings"
+	"os"
+	"path"
 )
 
 var Restore = cli.Command{
@@ -23,6 +25,7 @@ be skipped and remain unchanged.`,
 	Action: runRestore,
 	Flags: []cli.Flag{
 		cli.StringFlag{Name: "config, c", Value: "/src/config/cfg.ini", Usage: "Custom configuration file path"},
+		cli.StringFlag{Name: "file, f", Usage: "restore file"},
 	},
 }
 
@@ -35,15 +38,21 @@ func runRestore(ctx *cli.Context) {
 	setting.CfgFileName = CfgFile
 	setting.GlobalInit()
 	baseSession.DBInit()
+	zipFile := ctx.String("file")
+	tmpDir := os.TempDir()
+	zip.ExtractTo(zipFile, tmpDir)
+	archiveDir := path.Join(tmpDir, "gog")
+	defer os.RemoveAll(archiveDir)
+	dbFile := path.Join(archiveDir, "database")
 	inputOptions := &mongorestore.InputOptions{}
 	outputOptions := &mongorestore.OutputOptions{
 		NumParallelCollections: 1,
 		NumInsertionWorkers:    1,
 	}
 	nsOptions := &mongorestore.NSOptions{}
-	hostPort := strings.Split(setting.DBConfig.Host, ":")
+	//	hostPort := strings.Split(setting.DBConfig.Host, ":")
 	connection := &options.Connection{
-		Host: hostPort[0],
+		Host: "127.0.0.1",
 		Port: "27018",
 	}
 	auth := options.Auth{
@@ -74,7 +83,7 @@ func runRestore(ctx *cli.Context) {
 		NSOptions:       nsOptions,
 		SessionProvider: sessionProvider,
 	}
-	restore.TargetDirectory = "/home/jj/go/src/github.com/mongodb/mongo-tools/mongodump/dump"
+	restore.TargetDirectory = dbFile
 	err = restore.Restore()
 	if err != nil {
 		fmt.Println(err)

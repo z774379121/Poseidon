@@ -14,9 +14,14 @@ import (
 )
 
 type modules struct {
-	songs models.Songs
-	user  models.User
-	actor models.Actor
+	songs         models.Songs
+	user          models.User
+	actor         models.Actor
+	collection    models.Collection
+	BTFile        models.BTFile
+	BTFileContent models.BTFiles
+	Film          models.Film
+	Tag           models.Tag
 }
 
 var pathMO = "/src/models/modelsDefine"

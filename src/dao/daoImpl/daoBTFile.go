@@ -10,7 +10,7 @@ type daoBTFileImpl struct {
 	baseSession.BaseSession
 }
 
-func NewdaoBTFileImpl() *daoBTFileImpl {
+func NewDaoBTFile() *daoBTFileImpl {
 	obj := &daoBTFileImpl{}
 	obj.Init(models.BTFile{}, models.COLLECTION_NAME_BTFile)
 	return obj

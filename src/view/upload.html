@@ -1,0 +1,194 @@
+<!--A Design by W3layouts
+   Author: W3layout
+   Author URL: http://w3layouts.com
+   License: Creative Commons Attribution 3.0 Unported
+   License URL: http://creativecommons.org/licenses/by/3.0/
+   -->
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>Pet Found Form a Flat Responsive Widget Template :: w3layouts </title>
+      <!-- Meta tags -->
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta name="keywords" content="Pet Found Form Responsive Widget, Audio and Video players, Login Form Web Template, Flat Pricing Tables, Flat Drop-Downs, Sign-Up Web Templates, Flat Web Templates, Login Sign-up Responsive Web Template, Smartphone Compatible Web Template, Free Web Designs for Nokia, Samsung, LG, Sony Ericsson, Motorola Web Design"
+         />
+      <script>
+         addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }
+      </script>
+       <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
+       <script src="http://malsup.github.io/min/jquery.form.min.js" type="text/javascript"></script>
+       <script type="text/javascript">
+                $(document).ready(function() {
+                    var options = {
+                        target:        '#output1',   // 用服务器返回的数据 更新 id为output1的内容.
+                        beforeSubmit:  showRequest,  // 提交前
+                        success:       showResponse,  // 提交后
+                        //另外的一些属性:
+                        //url:       url         // 默认是form的action，如果写的话，会覆盖from的action.
+                        //type:      type        // 默认是form的method，如果写的话，会覆盖from的method.('get' or 'post').
+                        //dataType:  null        // 'xml', 'script', or 'json' (接受服务端返回的类型.)
+                        //clearForm: true        // 成功提交后，清除所有的表单元素的值.
+                    //    resetForm: true        // 成功提交后，重置所有的表单元素的值.
+                        //由于某种原因,提交陷入无限等待之中,timeout参数就是用来限制请求的时间,
+                        //当请求大于3秒后，跳出请求.
+                        //timeout:   3000
+                    };
+
+                    //'ajaxForm' 方式的表单 .
+                    $('#myForm').ajaxForm(options);
+                    //或者 'ajaxSubmit' 方式的提交.
+                    //$('#myForm').submit(function() {
+                    //    $(this).ajaxSubmit(options);
+                    //    return false; //来阻止浏览器提交.
+                    //});
+                });
+
+               // 提交前
+              function showRequest(formData, jqForm, options) {
+                 // formdata是数组对象,在这里，我们使用$.param()方法把他转化为字符串.
+                  //var queryString = $.param(formData); //组装数据，插件会自动提交数据
+//                  alert(queryString); //类似 ： name=1&add=2
+                  return true;
+                }
+
+              //  提交后
+            function showResponse(responseText, statusText)  {
+                   alert('状态: ' + statusText + '\n 返回的内容是: \n' + responseText);
+             }
+
+ function submitform(){
+        document.myForm.action="/v1/upload";
+        document.myForm.submit();
+    }
+
+
+
+    </script>
+      <!-- Meta tags -->
+      <!--stylesheets-->
+      <link href="/css/style4.css" rel='stylesheet' type='text/css' />
+      <!--//style sheet end here-->
+      <link href="//fonts.googleapis.com/css?family=Barlow:300,400,500" rel="stylesheet">
+   </head>
+   <body>
+      <h1 class="header-w3ls">
+          资源 上传
+      </h1>
+      <!-- multistep form -->
+      <div class="main-bothside">
+         <form action="#" method="post">
+            <div class="form-group">
+               <div class="form-mid-w3ls">
+                  <input type="text" name="name"  placeholder="Name" required="">
+               </div>
+               <div class="form-mid-w3ls">
+                  <input type="email" name="Email" placeholder="Email" required="">
+               </div>
+               <div class="form-mid-w3ls">
+                  <input type="text" name="Phone" placeholder="Phone" required="">
+               </div>
+            </div>
+            <div class="form-group">
+               <div class="form-mid-w3ls">
+                  <input type="text" name="City" placeholder="City" required="">
+               </div>
+               <div class="form-mid-w3ls">
+                  <input type="text" name="Address" placeholder="Address" required="">
+               </div>
+               <div class="form-mid-w3ls">
+                  <input type="text" name="State" placeholder="State" required="">
+               </div>
+            </div>
+            <div class="parent-clss">
+               <div class="personal-info">
+                  <p>Gender</p>
+                  <div class="form-check">
+                     <input class="form-check-input" type="radio" name="select4" value="option1" checked="">
+                     <label class="form-check-label">
+                     Male
+                     </label>
+                  </div>
+                  <div class="form-check">
+                     <input class="form-check-input" type="radio" name="select4" value="option2" checked="">
+                     <label class="form-check-label">
+                     Female
+                     </label>
+                  </div>
+               </div>
+               <div class="personal-info">
+                  <p>Pet</p>
+                  <div class="form-check">
+                     <input class="form-check-input" type="radio" name="select5" value="option3" checked="">
+                     <label class="form-check-label">
+                     Cat
+                     </label>
+                  </div>
+                  <div class="form-check">
+                     <input class="form-check-input" type="radio" name="select5" value="option4" checked="">
+                     <label class="form-check-label">
+                     Dog
+                     </label>
+                  </div>
+                  <div class="form-check">
+                     <input class="form-check-input" type="radio" name="select5" value="option5" checked="">
+                     <label class="form-check-label">
+                     Other
+                     </label>
+                  </div>
+               </div>
+               <div class="personal-info">
+                  <p>Identification</p>
+                  <div class="form-check">
+                     <input class="form-check-input" type="radio" name="select6" value="option6" checked="">
+                     <label class="form-check-label">
+                     Tattooed
+                     </label>
+                  </div>
+                  <div class="form-check">
+                     <input class="form-check-input" type="radio" name="select6" value="option7" checked="">
+                     <label class="form-check-label">
+                     Microchipped 
+                     </label>
+                     <div class="clear"></div>
+                  </div>
+                  <div class="form-check">
+                     <input class="form-check-input" type="radio" name="select6" value="option8" checked="">
+                     <label class="form-check-label">
+                     Other
+                     </label>
+                  </div>
+               </div>
+            </div>
+            <div class="form-group">
+               <div class="form-mid-w3ls">
+                  <input type="text" name="Age" class="form-control" placeholder="Age">
+               </div>
+               <div class="form-mid-w3ls">
+                  <input type="email" name="Breed/type" placeholder="Breed/type">
+               </div>
+               <div class="form-mid-w3ls">
+                  <input type="text" name="Pet Color & Markings" placeholder="Pet Color & Markings">
+               </div>
+            </div>
+            <div class="form-control-w3l">
+               <textarea name="Message" name="name" placeholder="Any Message..."></textarea>
+            </div>
+            {{/*<div class="custom-file form-left-choose">*/}}
+               {{/*<input type="file" class="custom-file-input" id="customFile">*/}}
+            {{/*</div>*/}}
+            {{/*<input type="submit" value="Submit">*/}}
+         </form>
+          <form id="myForm" action="/v1/upload" method="post" enctype="multipart/form-data">
+              <input type="file" class="upload-file" name="avatar" onchange="submitform()"/>
+              <input type="hidden" name="xx" value="1"/>
+              //
+              <button type="submit" class="but1">上传</button>
+              <div id="output1"></div>
+          </form>
+      </div>
+      <div class="copy">
+         <p>©2018 Pet Found Form. All Rights Reserved | Design by <a href="http://www.W3Layouts.com" target="_blank">W3Layouts</a></p>
+      </div>
+   </body>
+</html>

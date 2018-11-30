@@ -13,6 +13,7 @@ import (
 	"github.com/z774379121/untitled1/src/models"
 	"github.com/z774379121/untitled1/src/service"
 	"github.com/z774379121/untitled1/src/setting"
+	"github.com/z774379121/untitled1/src/xm/common"
 	"gopkg.in/mgo.v2/bson"
 	"html/template"
 	"io"
@@ -83,6 +84,9 @@ func runWeb(context *cli.Context) error {
 
 	g := e.Group("/v1")
 	{
+		g.GET("/upload", func(context echo.Context) error {
+			return context.Render(http.StatusOK, "upload.html", nil)
+		})
 		g.GET("/", func(context echo.Context) error {
 			cookie, err := context.Cookie("User_token")
 			var name string
@@ -126,7 +130,7 @@ func runWeb(context *cli.Context) error {
 			}
 
 			// Source
-			fmt.Println(avatar.Filename, avatar.Size)
+			fmt.Println(avatar.Filename, common.FileSize(avatar.Size))
 			src, err := avatar.Open()
 			if err != nil {
 				return err
@@ -134,7 +138,7 @@ func runWeb(context *cli.Context) error {
 
 			defer src.Close()
 
-			des := make([]byte, 1000000)
+			des := make([]byte, avatar.Size)
 			n, err2 := src.Read(des)
 			if err2 != nil {
 				fmt.Println(err2)
@@ -142,30 +146,51 @@ func runWeb(context *cli.Context) error {
 			}
 			fmt.Println(n)
 			// Destination
-			dao := dao.NewDaoCarImg()
-			ok, name := dao.UploadImg(bson.NewObjectId(), &des)
+			daoFile := dao.NewDaoBTFile()
+			ok, name := daoFile.UploadBTFile(bson.NewObjectId(), &des)
 			if !ok {
 				return context.String(http.StatusBadRequest, "插入到数据库失败")
 			}
-			return context.String(http.StatusOK, name)
-
+			daoFileContent := dao.NewDaoBTFileContent()
+			if daoFileContent.UpdateRealFileName(name, avatar.Filename) {
+				return context.String(http.StatusOK, name)
+			}
+			return context.String(http.StatusBadRequest, "更新名字失败")
 		})
 		g.GET("/download/:filename", func(context echo.Context) error {
 			filename := context.Param("filename")
-			dao := dao.NewDaoCarImg()
-			img := dao.DownloadImg(filename)
+			if !bson.IsObjectIdHex(filename) {
+				return context.String(http.StatusForbidden, "invaild filename")
+			}
+
+			daoFile := dao.NewDaoBTFile()
+			img := daoFile.DownloadBTFile(filename)
+			if img == nil {
+				return context.String(http.StatusForbidden, "not found")
+			}
+
+			daoFileContent := dao.NewDaoBTFileContent()
+			imgInfo := daoFileContent.SelectByName(filename)
+			filename = filename + ".torrent"
+			if imgInfo.RealFileName != "" {
+				filename = imgInfo.RealFileName
+			}
+			fmt.Println(imgInfo.Id_, imgInfo.Md5)
+			fmt.Println(imgInfo.RealFileName)
 			dst, err := os.Create(filename)
 			if err != nil {
 				return err
 			}
 			defer dst.Close()
+			defer os.Remove(filename)
 
 			// Copy
 			if _, err = io.Copy(dst, bytes.NewReader(*img)); err != nil {
 				return err
 			}
+			context.Response().Header().Set("Content-Type", "application/octet-stream")
+			context.Response().Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", filename))
 			return context.File(filename)
-
 		})
 	}
 	e.Logger.Fatal(e.Start(setting.Port))
