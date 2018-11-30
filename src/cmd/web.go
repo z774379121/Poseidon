@@ -49,7 +49,7 @@ func runWeb(context *cli.Context) error {
 		return c.File("src/view/404.html")
 	}
 	e := echo.New()
-	//e.File("favicon.ico", "/images/play.ico")
+	e.File("favicon.ico", "/images/play.ico")
 	e.Static("/", "src/view")
 	e.Renderer = t
 	e.Use(middleware.Logger())
@@ -86,6 +86,14 @@ func runWeb(context *cli.Context) error {
 	{
 		g.GET("/upload", func(context echo.Context) error {
 			return context.Render(http.StatusOK, "upload.html", nil)
+		})
+		g.POST("/t", func(context echo.Context) error {
+			return context.JSON(http.StatusOK, map[string]interface{}{
+				"msg": "OK",
+			})
+		})
+		g.GET("/t", func(context echo.Context) error {
+			return context.Render(http.StatusOK, "login.html", nil)
 		})
 		g.GET("/", func(context echo.Context) error {
 			cookie, err := context.Cookie("User_token")
@@ -153,7 +161,10 @@ func runWeb(context *cli.Context) error {
 			}
 			daoFileContent := dao.NewDaoBTFileContent()
 			if daoFileContent.UpdateRealFileName(name, avatar.Filename) {
-				return context.String(http.StatusOK, name)
+				return context.JSON(http.StatusOK, map[string]interface{}{
+					"msg":  "ok",
+					"name": name,
+				})
 			}
 			return context.String(http.StatusBadRequest, "更新名字失败")
 		})
