@@ -54,13 +54,17 @@ func SignUp(context echo.Context) error {
 	if !insertModel {
 		return context.String(http.StatusBadRequest, "插入新用户到数据库失败")
 	}
-	token := jwt.New(jwt.SigningMethodHS256)
+
 	// Set claims
-	claims := token.Claims.(jwt.MapClaims)
-	claims["name"] = userName
-	claims["email"] = email
-	claims["admin"] = true
-	claims["exp"] = time.Now().Add(time.Hour * 2).Unix()
+	claims := &JwtCustomClaims{
+		userName,
+		email,
+		false,
+		jwt.StandardClaims{
+			ExpiresAt:time.Now().Add(time.Hour*2).Unix(),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(setting.JWTSignKey))
@@ -183,4 +187,19 @@ func C(context echo.Context) error {
 		fmt.Println("插入成功", i)
 	}
 	return nil
+}
+
+// 邮箱链接确认,通过jwt
+func Restricted(c echo.Context) error {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*JwtCustomClaims)
+	name := claims.Name
+	email := claims.Email
+	daoUser := dao.NewDaoUser()
+	muser := daoUser.SelectByEmailAll(email)
+	if !daoUser.UpdateUserEmailCheck(muser.Id_) {
+		return c.String(http.StatusOK, "认证失败")
+	}
+
+	return c.String(http.StatusOK, "Welcome "+name+"!")
 }

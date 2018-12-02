@@ -1,24 +1,17 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/urfave/cli"
 	"github.com/z774379121/untitled1/src/controller"
 	"github.com/z774379121/untitled1/src/dao"
 	"github.com/z774379121/untitled1/src/dao/baseSession"
-	"github.com/z774379121/untitled1/src/models"
 	"github.com/z774379121/untitled1/src/service"
 	"github.com/z774379121/untitled1/src/setting"
-	"github.com/z774379121/untitled1/src/xm/common"
-	"gopkg.in/mgo.v2/bson"
 	"html/template"
-	"io"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -49,8 +42,8 @@ func runWeb(context *cli.Context) error {
 		return c.File("src/view/404.html")
 	}
 	e := echo.New()
-	//e.File("favicon.ico", "/images/play.ico")
 	e.Static("/", "src/view")
+	e.File("/favicon.ico", "images/play.ico")
 	e.Renderer = t
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -63,6 +56,28 @@ func runWeb(context *cli.Context) error {
 	e.GET("/boot", service.Boot)
 	e.GET("/actor/:id", service.GetActor)
 	e.GET("/actor", service.GetActorRegex)
+	e.GET("/ss", func(context echo.Context) error {
+		return context.Render(http.StatusOK, "sear.html", nil)
+	})
+	e.GET("/search", func(context echo.Context) error {
+		name := context.QueryParam("keyword")
+		daoActor := dao.NewDaoActor()
+		actors := daoActor.SelectLikeByName(name)
+		data := len(*actors)
+		if data >10 {
+			data = 10
+		}
+		z := make([]string, 0, data)
+		actor := *actors
+		for i := 0; i < data; i++ {
+			actor := actor[i]
+			z = append(z, actor.Name)
+		}
+		return context.JSON(http.StatusOK, map[string]interface{}{
+			"s":z,
+			"data":true,
+		})
+	})
 	//e.GET("/c", service.C)
 	admin := e.Group("/admin")
 	{
@@ -76,10 +91,11 @@ func runWeb(context *cli.Context) error {
 	l := e.Group("/auth")
 	{
 		l.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+			Claims:&service.JwtCustomClaims{},
 			SigningKey:  []byte(setting.JWTSignKey),
 			TokenLookup: "query:token",
 		}))
-		l.GET("/", restricted)
+		l.GET("/", service.Restricted)
 	}
 
 	g := e.Group("/v1")
@@ -110,111 +126,15 @@ func runWeb(context *cli.Context) error {
 			return context.String(http.StatusOK, fmt.Sprintf("hello from web %s", name))
 		})
 
-		g.POST("/songs", func(context echo.Context) error {
-			name := context.FormValue("name")
-			singer := context.FormValue("singer")
-			fmt.Println(singer)
-			daoSongs := dao.NewDaoSongs()
-			newSong := models.NewSongs()
-			newSong.Name = name
-			if ok := daoSongs.InsertOne(newSong); !ok {
-				context.String(http.StatusInternalServerError, "插入失败")
-			}
-			return context.String(http.StatusOK, "插入成功")
-		})
-
-		g.POST("/upload", func(context echo.Context) error {
-			avatar, err := context.FormFile("avatar")
-			if err != nil {
-				return err
-			}
-
-			// Source
-			fmt.Println(avatar.Filename, common.FileSize(avatar.Size))
-			src, err := avatar.Open()
-			if err != nil {
-				return err
-			}
-
-			defer src.Close()
-
-			des := make([]byte, avatar.Size)
-			n, err2 := src.Read(des)
-			if err2 != nil {
-				fmt.Println(err2)
-				return context.String(http.StatusBadRequest, "读取失败")
-			}
-			fmt.Println(n)
-			// Destination
-			daoFile := dao.NewDaoBTFile()
-			ok, name := daoFile.UploadBTFile(bson.NewObjectId(), &des)
-			if !ok {
-				return context.String(http.StatusBadRequest, "插入到数据库失败")
-			}
-			daoFileContent := dao.NewDaoBTFileContent()
-			if daoFileContent.UpdateRealFileName(name, avatar.Filename) {
-				return context.JSON(http.StatusOK, map[string]interface{}{
-					"msg":"ok",
-					"name":name,
-				})
-			}
-			return context.String(http.StatusBadRequest, "更新名字失败")
-		})
-		g.GET("/download/:filename", func(context echo.Context) error {
-			filename := context.Param("filename")
-			if !bson.IsObjectIdHex(filename) {
-				return context.String(http.StatusForbidden, "invaild filename")
-			}
-
-			daoFile := dao.NewDaoBTFile()
-			img := daoFile.DownloadBTFile(filename)
-			if img == nil {
-				return context.String(http.StatusForbidden, "not found")
-			}
-
-			daoFileContent := dao.NewDaoBTFileContent()
-			imgInfo := daoFileContent.SelectByName(filename)
-			filename = filename + ".torrent"
-			if imgInfo.RealFileName != "" {
-				filename = imgInfo.RealFileName
-			}
-			fmt.Println(imgInfo.Id_, imgInfo.Md5)
-			fmt.Println(imgInfo.RealFileName)
-			dst, err := os.Create(filename)
-			if err != nil {
-				return err
-			}
-			defer dst.Close()
-			defer os.Remove(filename)
-
-			// Copy
-			if _, err = io.Copy(dst, bytes.NewReader(*img)); err != nil {
-				return err
-			}
-			context.Response().Header().Set("Content-Type", "application/octet-stream")
-			context.Response().Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", filename))
-			return context.File(filename)
-		})
+		g.POST("/upload", service.UpLoad)
+		g.GET("/download/:filename", service.Download)
 	}
 	e.Logger.Fatal(e.Start(setting.Port))
 	return nil
 
 }
 
-func restricted(c echo.Context) error {
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	name := claims["name"].(string)
-	email := claims["email"].(string)
-	daoUser := dao.NewDaoUser()
-	muser := daoUser.SelectByEmailAll(email)
-	if !daoUser.UpdateUserEmailCheck(muser.Id_) {
-		return c.String(http.StatusOK, "认证失败")
-	}
-
-	return c.String(http.StatusOK, "Welcome "+name+"!")
-}
-
+// 登录中间件
 func ServiceController(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(context echo.Context) error {
 		ctl := new(controller.BaseController)
@@ -223,11 +143,13 @@ func ServiceController(next echo.HandlerFunc) echo.HandlerFunc {
 		if token == "" {
 			return ctl.C.String(http.StatusUnauthorized, "请先登录")
 		}
+
 		daoUser := dao.NewDaoUser()
 		user := daoUser.SelectByAppToken(token)
 		if user == nil {
 			return ctl.C.String(http.StatusUnauthorized, "非法token")
 		}
+
 		return next(context)
 	}
 }

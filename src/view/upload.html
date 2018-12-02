@@ -18,6 +18,8 @@
       </script>
        <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
        {{/*<script src="http://malsup.github.io/min/jquery.form.min.js" type="text/javascript"></script>*/}}
+       <script src="http://how2j.cn/study/vue.min.js"></script>
+       <script src="http://how2j.cn/study/fetch.min.js"></script>
        <script src="/js/ajaxfileupload.js"></script>
        <script type="text/javascript">
            function uploadFile(obj, type) {
@@ -44,6 +46,155 @@
                });
                return false;
            }
+
+           function showHint(str)
+           {
+               var url = "/search?keyword="+str;
+               fetch(url).then(function(response) {
+                   response.json().then(function (jsonObject) {
+                       console.log(response.status);
+                      keydata(jsonObject["s"])
+
+                   })
+               }).catch(function(err){
+                   console.log("Fetch错误:"+err);
+               });
+           }
+
+           function keydata(keys){
+               var len=keys.length;
+               var keywordbox=$(".kkw");//关键词盒子
+               var textb=$(".main-bothside form #name");
+               var subb=$("#search_bg #button_bg form .subb");
+               if(len==0){
+                   keywordbox.css({display:"none"});
+               }else{
+                   keywordbox.css({display:"block"});
+               }
+               var spans="";
+               for(var i=0;i<len;i++)
+               {
+                   spans+="<span style='display: block'>"+keys[i]+"</span>"+"\n"
+               }
+               keywordbox.html(spans);//把关键词写入关键词盒子
+               keywordbox.animate({
+                   height:(keywordbox.children().height()+1)*len//关键词下滑效果
+               },100);
+               //点击候选词汇
+               keywordbox.children().click(function(){
+                   textb.val($(this).html());//选中词汇放入输入框
+
+                   keywordbox.animate({
+                       height:0//关键盒子收缩效果
+                   },10,function(){
+                       keywordbox.css({display:"none",height:"auto"});
+                       keywordbox.empty();//清空盒子内容
+                   });
+
+                   textb.focus();//输入框获取焦点*/
+                   // $("#search_bg #button_bg form").submit();//提交搜索
+               });
+
+               //提交按钮获取焦点后
+               subb.focus(function(){//提交按钮获取焦点后
+                   keywordbox.animate({
+                       height:0//关键盒子收缩效果
+                   },10,function(){
+                       keywordbox.css({display:"none",height:"auto"});
+                       keywordbox.empty();//清空盒子内容
+                   });
+               });
+
+               /*textb.blur(function(){//输入框失去焦点后收缩关键词盒子(此方法会与点击候选词方法冲突造成失效)
+                 keywordbox.animate({
+                   height:0//关键盒子收缩效果
+                 },100,function(){
+                   keywordbox.css({display:"none",height:"auto"});
+                   keywordbox.empty();//清空盒子内容
+                 });
+               });*/
+               // keywordbox.mouseleave(function(){//鼠标离开关键字盒子后收缩关键词盒子（取代上一个方法）
+               //     keywordbox.animate({
+               //         height:0//关键盒子收缩效果
+               //     },100,function(){
+               //         keywordbox.css({display:"none",height:"auto"});
+               //         keywordbox.empty();//清空盒子内容
+               //     });
+               // });
+               var numspan=0;//用来指定选择候选词（通过方向键改变）
+               textb.keydown(function(event){//如果使用回车提交时，关键词盒子也可以自动收缩
+                   if(event.which==13){
+                       keywordbox.animate({
+                           height:0//关键盒子收缩效果
+                       },10,function(){
+                           keywordbox.css({display:"none",height:"auto"});
+                           keywordbox.empty();//清空盒子内容
+                       });
+                       /*$("#search_bg #button_bg form").submit(function(){
+                         return false;//阻止提交
+                       });*/
+                       /*$("#search_bg #button_bg form").submit(function(e){
+                         e.preventDefault();//阻止提交方法2
+                       });*/
+                   }
+                   //按下下方向键
+                   if(event.which==40){
+
+                       if(numspan==len)
+                           numspan=0;
+                       for(var i=0;i<len;i++){
+                           if(numspan==i){
+                               keywordbox.children().eq(i).css({
+                                   "background-color":"rgba(0,0,0,0.3)"
+                               });
+                           }else{
+                               keywordbox.children().eq(i).css({
+                                   "background-color":"rgba(255,255,255,0.3)"
+                               });
+                           }
+                       }
+                       textb.val(keywordbox.children().eq(numspan).html());
+                       numspan++;
+                   }
+                   //按下上方向键
+                   if(event.which==38){
+
+                       numspan--;
+                       if(numspan==len)
+                           numspan=0;
+                       for(var i=0;i<len;i++){
+                           if(numspan==i){
+                               keywordbox.children().eq(i).css({
+                                   "background-color":"rgba(0,0,0,0.3)"
+                               });
+                           }else{
+                               keywordbox.children().eq(i).css({
+                                   "background-color":"rgba(255,255,255,0.3)"
+                               });
+                           }
+                       }
+                       textb.val(keywordbox.children().eq(numspan).html());
+
+                   }
+               });
+               keywordbox.children().mouseover(function(){
+                   numspan=$(this).index();
+                   for(var i=0;i<len;i++){
+                       if(numspan==i){
+                           keywordbox.children().eq(i).css({
+                               "background-color":"rgba(0,0,0,0.3)"
+                           });
+                       }else{
+                           keywordbox.children().eq(i).css({
+                               "background-color":"rgba(255,255,255,0.3)"
+                           });
+                       }
+                   }
+                   textb.val(keywordbox.children().eq(numspan).html());
+               });
+
+           }
+
     </script>
       <!-- Meta tags -->
       <!--stylesheets-->
@@ -57,10 +208,14 @@
       </h1>
       <!-- multistep form -->
       <div class="main-bothside">
-         <form action="#" method="post">
-            <div class="form-group">
+         <form action="#" method="post" >
+            <div class="form-group" >
                <div class="form-mid-w3ls">
-                  <input type="text" name="name"  placeholder="Name" required="">
+                   <input id="name" type="text" name="name"  placeholder="Name" required="" v-model="name">
+                  {{/*<input id="name" type="text" name="name"  placeholder="Name" required=""  onchange="showHint(this.value)" />*/}}
+                   <div class="kkw" style="display: block">
+
+                   </div>
                </div>
                <div class="form-mid-w3ls">
                   <input type="email" name="Email" placeholder="Email" required="">
@@ -165,5 +320,34 @@
       <div class="copy">
          <p>©2018 Pet Found Form. All Rights Reserved | Design by <a href="http://www.W3Layouts.com" target="_blank">W3Layouts</a></p>
       </div>
+      <script>
+          function showHint1(str)
+          {
+              var url = "/search?keyword="+str;
+              fetch(url).then(function(response) {
+                  response.json().then(function (jsonObject) {
+                      console.log(response.status);
+                      keydata(jsonObject["s"])
+                  })
+              }).catch(function(err){
+                  console.log("Fetch错误:"+err);
+              });
+          }
+          new Vue({
+              delimiters: ['[[', ']]'],
+              el: '#name',
+              data:{
+                  name:""
+              },
+              watch:{
+                  name:function(val) {
+                      this.name = val;
+                      console.log(this.name);
+                      showHint1(this.name);
+                  }
+              }
+          })
+
+      </script>
    </body>
 </html>
