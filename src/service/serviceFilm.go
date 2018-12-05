@@ -1,17 +1,27 @@
 package service
 
 import (
-	"github.com/labstack/echo"
-	"gopkg.in/mgo.v2/bson"
-	"fmt"
-	"github.com/z774379121/untitled1/src/xm/common"
-	"net/http"
-	"github.com/z774379121/untitled1/src/dao"
-	"os"
-	"io"
 	"bytes"
+	"fmt"
+	"github.com/labstack/echo"
+	"github.com/z774379121/untitled1/src/dao"
+	"github.com/z774379121/untitled1/src/xm/common"
+	"gopkg.in/mgo.v2/bson"
+	"io"
+	"net/http"
+	"os"
 )
 
+/***
+ *    .___________.  ______   .______      .______       _______ .__   __. .___________.    _______  __   __       _______
+ *    |           | /  __  \  |   _  \     |   _  \     |   ____||  \ |  | |           |   |   ____||  | |  |     |   ____|
+ *    `---|  |----`|  |  |  | |  |_)  |    |  |_)  |    |  |__   |   \|  | `---|  |----`   |  |__   |  | |  |     |  |__
+ *        |  |     |  |  |  | |      /     |      /     |   __|  |  . `  |     |  |        |   __|  |  | |  |     |   __|
+ *        |  |     |  `--'  | |  |\  \----.|  |\  \----.|  |____ |  |\   |     |  |        |  |     |  | |  `----.|  |____
+ *        |__|      \______/  | _| `._____|| _| `._____||_______||__| \__|     |__|        |__|     |__| |_______||_______|
+ *
+ */
+// 上传种子文件,成功返回一个唯一的bid
 func UpLoad(context echo.Context) error {
 	avatar, err := context.FormFile("avatar")
 	if err != nil {
@@ -21,11 +31,10 @@ func UpLoad(context echo.Context) error {
 	// Source
 	fmt.Println(avatar.Filename, common.FileSize(avatar.Size))
 	src, err := avatar.Open()
+	defer src.Close()
 	if err != nil {
 		return err
 	}
-
-	defer src.Close()
 
 	des := make([]byte, avatar.Size)
 	n, err2 := src.Read(des)
@@ -40,16 +49,18 @@ func UpLoad(context echo.Context) error {
 	if !ok {
 		return context.String(http.StatusBadRequest, "插入到数据库失败")
 	}
+
 	daoFileContent := dao.NewDaoBTFileContent()
 	if daoFileContent.UpdateRealFileName(name, avatar.Filename) {
 		return context.JSON(http.StatusOK, map[string]interface{}{
-			"msg":"ok",
-			"name":name,
+			"msg":  "ok",
+			"name": name,
 		})
 	}
 	return context.String(http.StatusBadRequest, "更新名字失败")
 }
 
+// 根据上传图片后返回的bson类型文件名下载对应的种子文件
 func Download(context echo.Context) error {
 	filename := context.Param("filename")
 	if !bson.IsObjectIdHex(filename) {

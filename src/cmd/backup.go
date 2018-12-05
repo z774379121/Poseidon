@@ -5,7 +5,6 @@ import (
 	"github.com/Unknwon/cae/zip"
 	"github.com/mongodb/mongo-tools/common/log"
 	"github.com/mongodb/mongo-tools/common/options"
-	"github.com/mongodb/mongo-tools/common/util"
 	"github.com/mongodb/mongo-tools/mongodump"
 	"github.com/urfave/cli"
 	"github.com/z774379121/untitled1/src/dao/baseSession"
@@ -13,13 +12,12 @@ import (
 	"io/ioutil"
 	"os"
 	path2 "path"
-	"path/filepath"
 	"strings"
 	"time"
 )
 
 var BackUp = cli.Command{
-	Name:  "backUp",
+	Name:  "backup",
 	Usage: "Backup database and file",
 	Description: `Backup dumps and compresses all related files and database into zip file,
 which can be used for migrating current server to another server. The output format is meant to be
@@ -34,7 +32,7 @@ portable among all supported database engines.`,
 
 func backup(ctx *cli.Context) {
 	CfgFile := ctx.String("config")
-	target := ctx.String("target")
+	//target := ctx.String("target")
 	archive := ctx.String("archive-name")
 	fmt.Println(archive)
 	if ctx.IsSet("config") {
@@ -50,6 +48,7 @@ func backup(ctx *cli.Context) {
 		Source:    setting.DBConfig.DatabaseName,
 		Mechanism: "SCRAM-SHA-1",
 	}
+	// 默认备份当前使用的数据库源
 	hostPort := strings.Split(setting.DBConfig.Host, ":")
 	connection := &options.Connection{
 		Host: hostPort[0],
@@ -79,7 +78,7 @@ func backup(ctx *cli.Context) {
 		OutputOptions: outputOptions,
 	}
 	tmpDir, err := ioutil.TempDir("/tmp", "tmpDir-")
-	fmt.Println(tmpDir)
+	fmt.Println("建立临时目录:", tmpDir)
 	db := path2.Join(tmpDir, "db")
 	md.OutputOptions.Out = db
 	err = md.Init()
@@ -92,22 +91,17 @@ func backup(ctx *cli.Context) {
 		fmt.Println(err)
 		return
 	}
-	path, _ := os.Getwd()
-	dumpDir := util.ToUniversalPath(filepath.Join(path, target))
-	fmt.Println(dumpDir)
-	dumpDBDir := util.ToUniversalPath(filepath.Join(dumpDir, setting.DBConfig.DatabaseName))
-	fmt.Println(dumpDBDir)
 
 	archivez, err := zip.Create(archive)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	err = archivez.AddFile("sd.jpg", "/home/jj/Desktop/untitled1/5bebddcab91c2037c121188f.jpg")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	//err = archivez.AddFile("sd.jpg", "/home/jj/Desktop/untitled1/5bebddcab91c2037c121188f.jpg")
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return
+	//}
 	err = archivez.AddDir("gog/database", db)
 	if err != nil {
 		fmt.Println(err)
@@ -119,7 +113,7 @@ func backup(ctx *cli.Context) {
 		return
 	}
 	os.RemoveAll(tmpDir)
-	fmt.Println("ok")
+	fmt.Println("ok", archive)
 
 	return
 }

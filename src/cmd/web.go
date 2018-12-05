@@ -43,7 +43,7 @@ func runWeb(context *cli.Context) error {
 	}
 	e := echo.New()
 	e.Static("/", "src/view")
-	e.File("/favicon.ico", "images/play.ico")
+	e.File("/favicon.ico", "/images/play.ico")
 	e.Renderer = t
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -64,7 +64,7 @@ func runWeb(context *cli.Context) error {
 		daoActor := dao.NewDaoActor()
 		actors := daoActor.SelectLikeByName(name)
 		data := len(*actors)
-		if data >10 {
+		if data > 10 {
 			data = 10
 		}
 		z := make([]string, 0, data)
@@ -74,8 +74,8 @@ func runWeb(context *cli.Context) error {
 			z = append(z, actor.Name)
 		}
 		return context.JSON(http.StatusOK, map[string]interface{}{
-			"s":z,
-			"data":true,
+			"s":    z,
+			"data": true,
 		})
 	})
 	//e.GET("/c", service.C)
@@ -91,7 +91,7 @@ func runWeb(context *cli.Context) error {
 	l := e.Group("/auth")
 	{
 		l.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-			Claims:&service.JwtCustomClaims{},
+			Claims:      &service.JwtCustomClaims{},
 			SigningKey:  []byte(setting.JWTSignKey),
 			TokenLookup: "query:token",
 		}))

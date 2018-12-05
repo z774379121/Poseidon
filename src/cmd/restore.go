@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/Unknwon/cae/zip"
+	"github.com/lunny/log"
 	"github.com/mongodb/mongo-tools/common/db"
 	"github.com/mongodb/mongo-tools/common/options"
 	"github.com/mongodb/mongo-tools/mongorestore"
@@ -34,15 +35,19 @@ func runRestore(ctx *cli.Context) {
 	if ctx.IsSet("config") {
 		fmt.Println("custom file:", CfgFile)
 	}
-
+	// cfg init
 	setting.CfgFileName = CfgFile
 	setting.GlobalInit()
 	baseSession.DBInit()
+
+	// unzip file
 	zipFile := ctx.String("file")
 	tmpDir := os.TempDir()
 	zip.ExtractTo(zipFile, tmpDir)
 	archiveDir := path.Join(tmpDir, "gog")
 	defer os.RemoveAll(archiveDir)
+
+	// restore mongodb
 	dbFile := path.Join(archiveDir, "database")
 	inputOptions := &mongorestore.InputOptions{}
 	outputOptions := &mongorestore.OutputOptions{
@@ -50,7 +55,6 @@ func runRestore(ctx *cli.Context) {
 		NumInsertionWorkers:    1,
 	}
 	nsOptions := &mongorestore.NSOptions{}
-	//	hostPort := strings.Split(setting.DBConfig.Host, ":")
 	connection := &options.Connection{
 		Host: "127.0.0.1",
 		Port: "27018",
@@ -89,5 +93,5 @@ func runRestore(ctx *cli.Context) {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("opk")
+	log.Info("成功导入备份数据到 数据库: %s", setting.DBConfig.DatabaseName)
 }
