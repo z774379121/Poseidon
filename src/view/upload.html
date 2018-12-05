@@ -17,52 +17,183 @@
          addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }
       </script>
        <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
-       <script src="http://malsup.github.io/min/jquery.form.min.js" type="text/javascript"></script>
+       {{/*<script src="http://malsup.github.io/min/jquery.form.min.js" type="text/javascript"></script>*/}}
+       <script src="http://how2j.cn/study/vue.min.js"></script>
+       <script src="http://how2j.cn/study/fetch.min.js"></script>
+       <script src="/js/ajaxfileupload.js"></script>
        <script type="text/javascript">
-                $(document).ready(function() {
-                    var options = {
-                        target:        '#output1',   // 用服务器返回的数据 更新 id为output1的内容.
-                        beforeSubmit:  showRequest,  // 提交前
-                        success:       showResponse,  // 提交后
-                        //另外的一些属性:
-                        //url:       url         // 默认是form的action，如果写的话，会覆盖from的action.
-                        //type:      type        // 默认是form的method，如果写的话，会覆盖from的method.('get' or 'post').
-                        //dataType:  null        // 'xml', 'script', or 'json' (接受服务端返回的类型.)
-                        //clearForm: true        // 成功提交后，清除所有的表单元素的值.
-                    //    resetForm: true        // 成功提交后，重置所有的表单元素的值.
-                        //由于某种原因,提交陷入无限等待之中,timeout参数就是用来限制请求的时间,
-                        //当请求大于3秒后，跳出请求.
-                        //timeout:   3000
-                    };
+           function uploadFile(obj, type) {
 
-                    //'ajaxForm' 方式的表单 .
-                    $('#myForm').ajaxForm(options);
-                    //或者 'ajaxSubmit' 方式的提交.
-                    //$('#myForm').submit(function() {
-                    //    $(this).ajaxSubmit(options);
-                    //    return false; //来阻止浏览器提交.
-                    //});
-                });
+               $.ajaxFileUpload({
+                   url : "/v1/upload",
+                   secureuri : false,// 一般设置为false
+                   fileElementId : "fileUpload"+type,// 文件上传表单的id <input type="file" id="fileUpload" name="file" />
+                   dataType : 'json',// 返回值类型 一般设置为json
+                   data: {'type': type},
+                   type: "post",
 
-               // 提交前
-              function showRequest(formData, jqForm, options) {
-                 // formdata是数组对象,在这里，我们使用$.param()方法把他转化为字符串.
-                  //var queryString = $.param(formData); //组装数据，插件会自动提交数据
-//                  alert(queryString); //类似 ： name=1&add=2
-                  return true;
-                }
+                   success : function(data) // 服务器成功响应处理函数
+                   {
+                        // $("#fileUpload1").hide();
+                       $("#bsonId").val(data.name);
+                       alert(data.name);
 
-              //  提交后
-            function showResponse(responseText, statusText)  {
-                   alert('状态: ' + statusText + '\n 返回的内容是: \n' + responseText);
-             }
+                   },
+                   error : function(data)// 服务器响应失败处理函数
+                   {
+                       console.log("服务器异常");
+                   }
+               });
+               return false;
+           }
 
- function submitform(){
-        document.myForm.action="/v1/upload";
-        document.myForm.submit();
-    }
+           function showHint(str)
+           {
+               var url = "/search?keyword="+str;
+               fetch(url).then(function(response) {
+                   response.json().then(function (jsonObject) {
+                       console.log(response.status);
+                      keydata(jsonObject["s"])
 
+                   })
+               }).catch(function(err){
+                   console.log("Fetch错误:"+err);
+               });
+           }
 
+           function keydata(keys){
+               var len=keys.length;
+               var keywordbox=$(".kkw");//关键词盒子
+               var textb=$(".main-bothside form #name");
+               var subb=$("#search_bg #button_bg form .subb");
+               if(len==0){
+                   keywordbox.css({display:"none"});
+               }else{
+                   keywordbox.css({display:"block"});
+               }
+               var spans="";
+               for(var i=0;i<len;i++)
+               {
+                   spans+="<span style='display: block'>"+keys[i]+"</span>"+"\n"
+               }
+               keywordbox.html(spans);//把关键词写入关键词盒子
+               keywordbox.animate({
+                   height:(keywordbox.children().height()+1)*len//关键词下滑效果
+               },100);
+               //点击候选词汇
+               keywordbox.children().click(function(){
+                   textb.val($(this).html());//选中词汇放入输入框
+
+                   keywordbox.animate({
+                       height:0//关键盒子收缩效果
+                   },10,function(){
+                       keywordbox.css({display:"none",height:"auto"});
+                       keywordbox.empty();//清空盒子内容
+                   });
+
+                   textb.focus();//输入框获取焦点*/
+                   // $("#search_bg #button_bg form").submit();//提交搜索
+               });
+
+               //提交按钮获取焦点后
+               subb.focus(function(){//提交按钮获取焦点后
+                   keywordbox.animate({
+                       height:0//关键盒子收缩效果
+                   },10,function(){
+                       keywordbox.css({display:"none",height:"auto"});
+                       keywordbox.empty();//清空盒子内容
+                   });
+               });
+
+               /*textb.blur(function(){//输入框失去焦点后收缩关键词盒子(此方法会与点击候选词方法冲突造成失效)
+                 keywordbox.animate({
+                   height:0//关键盒子收缩效果
+                 },100,function(){
+                   keywordbox.css({display:"none",height:"auto"});
+                   keywordbox.empty();//清空盒子内容
+                 });
+               });*/
+               // keywordbox.mouseleave(function(){//鼠标离开关键字盒子后收缩关键词盒子（取代上一个方法）
+               //     keywordbox.animate({
+               //         height:0//关键盒子收缩效果
+               //     },100,function(){
+               //         keywordbox.css({display:"none",height:"auto"});
+               //         keywordbox.empty();//清空盒子内容
+               //     });
+               // });
+               var numspan=0;//用来指定选择候选词（通过方向键改变）
+               textb.keydown(function(event){//如果使用回车提交时，关键词盒子也可以自动收缩
+                   if(event.which==13){
+                       keywordbox.animate({
+                           height:0//关键盒子收缩效果
+                       },10,function(){
+                           keywordbox.css({display:"none",height:"auto"});
+                           keywordbox.empty();//清空盒子内容
+                       });
+                       /*$("#search_bg #button_bg form").submit(function(){
+                         return false;//阻止提交
+                       });*/
+                       /*$("#search_bg #button_bg form").submit(function(e){
+                         e.preventDefault();//阻止提交方法2
+                       });*/
+                   }
+                   //按下下方向键
+                   if(event.which==40){
+
+                       if(numspan==len)
+                           numspan=0;
+                       for(var i=0;i<len;i++){
+                           if(numspan==i){
+                               keywordbox.children().eq(i).css({
+                                   "background-color":"rgba(0,0,0,0.3)"
+                               });
+                           }else{
+                               keywordbox.children().eq(i).css({
+                                   "background-color":"rgba(255,255,255,0.3)"
+                               });
+                           }
+                       }
+                       textb.val(keywordbox.children().eq(numspan).html());
+                       numspan++;
+                   }
+                   //按下上方向键
+                   if(event.which==38){
+
+                       numspan--;
+                       if(numspan==len)
+                           numspan=0;
+                       for(var i=0;i<len;i++){
+                           if(numspan==i){
+                               keywordbox.children().eq(i).css({
+                                   "background-color":"rgba(0,0,0,0.3)"
+                               });
+                           }else{
+                               keywordbox.children().eq(i).css({
+                                   "background-color":"rgba(255,255,255,0.3)"
+                               });
+                           }
+                       }
+                       textb.val(keywordbox.children().eq(numspan).html());
+
+                   }
+               });
+               keywordbox.children().mouseover(function(){
+                   numspan=$(this).index();
+                   for(var i=0;i<len;i++){
+                       if(numspan==i){
+                           keywordbox.children().eq(i).css({
+                               "background-color":"rgba(0,0,0,0.3)"
+                           });
+                       }else{
+                           keywordbox.children().eq(i).css({
+                               "background-color":"rgba(255,255,255,0.3)"
+                           });
+                       }
+                   }
+                   textb.val(keywordbox.children().eq(numspan).html());
+               });
+
+           }
 
     </script>
       <!-- Meta tags -->
@@ -77,10 +208,14 @@
       </h1>
       <!-- multistep form -->
       <div class="main-bothside">
-         <form action="#" method="post">
-            <div class="form-group">
+         <form action="#" method="post" >
+            <div class="form-group" >
                <div class="form-mid-w3ls">
-                  <input type="text" name="name"  placeholder="Name" required="">
+                   <input id="name" type="text" name="name"  placeholder="Name" required="" v-model="name">
+                  {{/*<input id="name" type="text" name="name"  placeholder="Name" required=""  onchange="showHint(this.value)" />*/}}
+                   <div class="kkw" style="display: block">
+
+                   </div>
                </div>
                <div class="form-mid-w3ls">
                   <input type="email" name="Email" placeholder="Email" required="">
@@ -174,21 +309,45 @@
             <div class="form-control-w3l">
                <textarea name="Message" name="name" placeholder="Any Message..."></textarea>
             </div>
-            {{/*<div class="custom-file form-left-choose">*/}}
-               {{/*<input type="file" class="custom-file-input" id="customFile">*/}}
-            {{/*</div>*/}}
-            {{/*<input type="submit" value="Submit">*/}}
+            <div class="custom-file form-left-choose">
+               <input type="file" name="avatar" class="custom-file-input" id="fileUpload1" onchange ="uploadFile(this,1)">
+            </div>
+             <input type="text" id="bsonId" name="bsonname" value="Mickey Mouse">
+            <input type="submit" value="Submit">
+             {{/*<p>正面：<input name="file1" type="file" value="选择" size="20" id="fileUpload1" onchange ="uploadFile(this,1)"></p>*/}}
          </form>
-          <form id="myForm" action="/v1/upload" method="post" enctype="multipart/form-data">
-              <input type="file" class="upload-file" name="avatar" onchange="submitform()"/>
-              <input type="hidden" name="xx" value="1"/>
-              //
-              <button type="submit" class="but1">上传</button>
-              <div id="output1"></div>
-          </form>
       </div>
       <div class="copy">
          <p>©2018 Pet Found Form. All Rights Reserved | Design by <a href="http://www.W3Layouts.com" target="_blank">W3Layouts</a></p>
       </div>
+      <script>
+          function showHint1(str)
+          {
+              var url = "/search?keyword="+str;
+              fetch(url).then(function(response) {
+                  response.json().then(function (jsonObject) {
+                      console.log(response.status);
+                      keydata(jsonObject["s"])
+                  })
+              }).catch(function(err){
+                  console.log("Fetch错误:"+err);
+              });
+          }
+          new Vue({
+              delimiters: ['[[', ']]'],
+              el: '#name',
+              data:{
+                  name:""
+              },
+              watch:{
+                  name:function(val) {
+                      this.name = val;
+                      console.log(this.name);
+                      showHint1(this.name);
+                  }
+              }
+          })
+
+      </script>
    </body>
 </html>

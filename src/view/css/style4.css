@@ -217,7 +217,7 @@ nav.vertical ul li {
 /* vertical menu */
 
 nav.horizontal ul li {
-    display: inline-block;
+    display: block;
 }
 
 
@@ -352,7 +352,7 @@ h1.header-w3ls {
     margin-right: 9px;
 }
 .form-check {
-    display: inline-block;
+    display: block;
 }
 
 .personal-info p,label.form-check-label{
@@ -373,7 +373,7 @@ h1.header-w3ls {
     border: none;
     border-bottom: 1px solid #fff;
     margin: 0px 0px 16px;
-    display: inline-block;
+    display: block;
     background: none;
     letter-spacing: 2px;
     transition: all 0.5s ease-in-out;
