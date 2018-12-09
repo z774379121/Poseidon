@@ -3,7 +3,14 @@ package service
 import (
 	"bufio"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
+	"html/template"
+	"io"
+	"net/http"
+	"os"
+	"strings"
+	"time"
+
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/smallnest/rpcx/log"
 	"github.com/z774379121/untitled1/src/controller"
@@ -11,12 +18,6 @@ import (
 	"github.com/z774379121/untitled1/src/dao/baseSession"
 	"github.com/z774379121/untitled1/src/models"
 	"github.com/z774379121/untitled1/src/setting"
-	"html/template"
-	"io"
-	"net/http"
-	"os"
-	"strings"
-	"time"
 )
 
 type TemplateRenderer struct {
@@ -31,7 +32,7 @@ func SignUp(context echo.Context) error {
 	userName := context.FormValue("username")
 	pwd := context.FormValue("password")
 	pwd1 := context.FormValue("password1")
-	email := context.FormValue("email")
+	email := context.FormValue("emailsignup")
 	fmt.Println(pwd, pwd1)
 	if pwd1 != pwd {
 		return context.HTML(http.StatusBadRequest, "<script>alert('密码不一致');</script>")
@@ -41,11 +42,13 @@ func SignUp(context echo.Context) error {
 	if user != nil {
 		return context.String(http.StatusForbidden, "邮箱已经被使用")
 	}
+	fmt.Println(userName, email)
 	user = daoUser.SelectByEmailAll(email)
 	if user != nil {
 		return context.String(http.StatusUnauthorized, "账号已经注册,请前往邮箱确认")
 	}
 	user = models.NewUser()
+	user.Username = userName
 	user.Password = pwd
 	user.Email = email
 	user.GenSalt()
@@ -61,7 +64,7 @@ func SignUp(context echo.Context) error {
 		email,
 		false,
 		jwt.StandardClaims{
-			ExpiresAt:time.Now().Add(time.Hour*2).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

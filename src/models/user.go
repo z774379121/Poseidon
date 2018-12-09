@@ -4,30 +4,34 @@ import (
 	"crypto/sha256"
 	"crypto/subtle"
 	"fmt"
+	"time"
+
 	"github.com/z774379121/untitled1/src/xm/common"
 	"golang.org/x/crypto/pbkdf2"
 	"gopkg.in/mgo.v2/bson"
-	"time"
 )
 
 const COLLECTION_NAME_User string = "users"
 
 const (
-	HasSuperAuAuthorization_Login        = 10001 //表示拥有超级管理员的登录权限
-	HasSuperAuAuthorization_GetUserData  = 11001 //表示拥有获取用户数据的权限
-	HasSuperAuAuthorization_EditUserData = 11002 //表示拥有修改用户数据的权限
+	HasSuperAuAuthorization_Login        = 1 << iota //表示拥有超级管理员的登录权限
+	HasSuperAuAuthorization_GetUserData              //表示拥有获取用户数据的权限
+	HasSuperAuAuthorization_EditUserData             //表示拥有修改用户数据的权限
 )
+
+var DefaultAuthor = HasSuperAuAuthorization_GetUserData | HasSuperAuAuthorization_Login
 
 type User struct {
 	Id_           bson.ObjectId `bson:"_id"`
 	Email         string        `bson:"email" ` //邮箱
-	IsConfirmed   bool          `bson:"is_confirmed"`
-	Password      string        `bson:"password"` //密码，以md5形式储存
-	Salt          string        `bson:"salt"`
-	Session       string        `bson:"session"`
-	Token         string        `bson:"token"` //登录令牌
-	Authorization []int         `bson:"authorization"`
-	CreateTime    time.Time     `bson:"create_time"`
+	Username      string
+	IsConfirmed   bool   `bson:"is_confirmed"`
+	Password      string `bson:"password"` //密码，以md5形式储存
+	Salt          string `bson:"salt"`
+	Session       string `bson:"session"`
+	Token         string `bson:"token"` //登录令牌
+	Authorization int
+	CreateTime    time.Time `bson:"create_time"`
 
 	testGenUserToken func() (session, token string) `bson:",omitempty"` //测试注入用，处理用于生成测试的token
 }
@@ -41,7 +45,7 @@ func NewUser() *User {
 	obj := &User{}
 	obj.Id_ = bson.NewObjectId()
 	obj.CreateTime = time.Now()
-
+	obj.Authorization = DefaultAuthor
 	return obj
 }
 

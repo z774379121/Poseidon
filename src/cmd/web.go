@@ -2,6 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"html/template"
+	"net/http"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/urfave/cli"
@@ -10,15 +13,12 @@ import (
 	"github.com/z774379121/untitled1/src/dao/baseSession"
 	"github.com/z774379121/untitled1/src/service"
 	"github.com/z774379121/untitled1/src/setting"
-	"html/template"
-	"net/http"
-	"time"
 )
 
 var Web = cli.Command{
 	Name:  "web",
 	Usage: "Start web server",
-	Description: `Gogs web server is the only thing you need to run,
+	Description: `Power web server is the only thing you need to run,
 and it takes care of all the other things for you`,
 	Action: runWeb,
 	Flags: []cli.Flag{
@@ -28,6 +28,7 @@ and it takes care of all the other things for you`,
 }
 
 func runWeb(context *cli.Context) error {
+	// Global init
 	CfgFile := context.String("config")
 	if context.IsSet("config") {
 		fmt.Println("custom file:", CfgFile)
@@ -35,6 +36,8 @@ func runWeb(context *cli.Context) error {
 	setting.CfgFileName = CfgFile
 	setting.GlobalInit()
 	baseSession.DBInit()
+
+	// set static like echo templeRender and 404 page etc.
 	t := &service.TemplateRenderer{
 		Templates: template.Must(template.ParseGlob("src/view/*.html")),
 	}
@@ -47,6 +50,8 @@ func runWeb(context *cli.Context) error {
 	e.Renderer = t
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+
+	// begin router
 	e.GET("/", service.Hello)
 	e.GET("/dp", service.DP)
 	e.POST("/signUp", service.SignUp)
@@ -102,29 +107,29 @@ func runWeb(context *cli.Context) error {
 	{
 		g.GET("/upload", func(context echo.Context) error {
 			return context.Render(http.StatusOK, "upload.html", nil)
-		})
-		g.GET("/", func(context echo.Context) error {
-			cookie, err := context.Cookie("User_token")
-			var name string
-			if err != nil {
-				fmt.Println(err)
-				cookie := new(http.Cookie)
-				cookie.Name = "User_token"
-				cookie.Value = "jon"
-				cookie.Expires = time.Now().Add(24 * time.Hour)
-				context.SetCookie(cookie)
-				cookie = new(http.Cookie)
-				cookie.Name = "_tokenType"
-				cookie.Value = "Manner"
-				cookie.Expires = time.Now().Add(24 * time.Hour)
-				context.SetCookie(cookie)
-				fmt.Println("设置成功")
-			} else {
-				name = cookie.Value
-			}
-
-			return context.String(http.StatusOK, fmt.Sprintf("hello from web %s", name))
-		})
+		}, ServiceController)
+		//		g.GET("/", func(context echo.Context) error {
+		//			cookie, err := context.Cookie("User_token")
+		//			var name string
+		//			if err != nil {
+		//				fmt.Println(err)
+		//				cookie := new(http.Cookie)
+		//				cookie.Name = "User_token"
+		//				cookie.Value = "jon"
+		//				cookie.Expires = time.Now().Add(24 * time.Hour)
+		//				context.SetCookie(cookie)
+		//				cookie = new(http.Cookie)
+		//				cookie.Name = "_tokenType"
+		//				cookie.Value = "Manner"
+		//				cookie.Expires = time.Now().Add(24 * time.Hour)
+		//				context.SetCookie(cookie)
+		//				fmt.Println("设置成功")
+		//			} else {
+		//				name = cookie.Value
+		//			}
+		//
+		//			return context.String(http.StatusOK, fmt.Sprintf("hello from web %s", name))
+		//		})
 
 		g.POST("/upload", service.UpLoad)
 		g.GET("/download/:filename", service.Download)
