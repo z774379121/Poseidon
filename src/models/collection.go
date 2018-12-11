@@ -1,10 +1,11 @@
 package models
 
 import (
-	"github.com/z774379121/untitled1/src/dao/baseSession"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 	"time"
+
+	"github.com/z774379121/untitled1/src/dao/baseSession"
+	mgo "gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 const Collection_Name_Collection = "collection"

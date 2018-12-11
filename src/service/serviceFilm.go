@@ -3,13 +3,15 @@ package service
 import (
 	"bytes"
 	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+
 	"github.com/labstack/echo"
 	"github.com/z774379121/untitled1/src/dao"
 	"github.com/z774379121/untitled1/src/xm/common"
 	"gopkg.in/mgo.v2/bson"
-	"io"
-	"net/http"
-	"os"
 )
 
 /***
@@ -94,4 +96,40 @@ func Download(context echo.Context) error {
 	context.Response().Header().Set("Content-Type", "application/octet-stream")
 	context.Response().Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", filename))
 	return context.File(filename)
+}
+
+type FilmStruct struct {
+	FilmName   string `form:"film_name"`
+	Actor      string `form:"name"`
+	Shapeness  int    `form:"shapeness"`
+	BTFileName string `form:"bt_file_name"`
+	Content    string `form:"content"`
+	BTLink     string `form:"bt_link"`
+	LocalPath  string `form:"local_path"`
+}
+
+func NewFilm(context echo.Context) error {
+	f := new(FilmStruct)
+	if err := context.Bind(f); err != nil {
+		log.Println("表单无效", err)
+	}
+	token := context.Get("token")
+
+	//daoUser := dao.NewDaoUser()
+	//user := daoUser.SelectByAppToken(token.(string))
+	////daoClt := dao.NewColletion()
+	//daoFile := dao.NewDaoBTFileContent()
+	//daoFile.SelectByName(f.BTFileName)
+	//
+	//newObj := models.NewColletion()
+	////newObj.FilmRef.Id_ = f.FilmName
+	//newObj.Content = f.Content
+	//
+	//newObj.BTLink = f.BTLink
+	//newObj.LocalPath = f.LocalPath
+	//newObj.Shapeness = models.Shapeness(f.Shapeness)
+	//newObj.UserRef.Id = user.Id_
+	fmt.Println(token)
+	fmt.Println(f)
+	return context.String(http.StatusOK, "ok")
 }

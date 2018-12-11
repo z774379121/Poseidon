@@ -133,6 +133,7 @@ func runWeb(context *cli.Context) error {
 
 		g.POST("/upload", service.UpLoad)
 		g.GET("/download/:filename", service.Download)
+		g.POST("/fs", service.NewFilm, ServiceController)
 	}
 	e.Logger.Fatal(e.Start(setting.Port))
 	return nil
@@ -154,7 +155,7 @@ func ServiceController(next echo.HandlerFunc) echo.HandlerFunc {
 		if user == nil {
 			return ctl.C.String(http.StatusUnauthorized, "非法token")
 		}
-
+		context.Set("token", token)
 		return next(context)
 	}
 }

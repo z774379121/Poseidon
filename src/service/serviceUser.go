@@ -85,9 +85,11 @@ func Login(ctx echo.Context) error {
 	if userWithoutCheck == nil {
 		return ctx.String(http.StatusForbidden, "邮箱不存在")
 	}
+
 	if !userWithoutCheck.IsConfirmed {
 		return ctx.String(http.StatusUnauthorized, "邮箱未确认")
 	}
+
 	if userWithoutCheck.ValidatePassword(pwd) {
 		userWithoutCheck.GenUserToken()
 		ctl := controller.NewBaseController(ctx)
