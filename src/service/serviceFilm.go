@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 
@@ -106,30 +105,42 @@ type FilmStruct struct {
 	Content    string `form:"content"`
 	BTLink     string `form:"bt_link"`
 	LocalPath  string `form:"local_path"`
+	TagId      string `form:"tag_id"`
 }
 
-func NewFilm(context echo.Context) error {
-	f := new(FilmStruct)
-	if err := context.Bind(f); err != nil {
-		log.Println("表单无效", err)
+func FindActorFilm(ctx echo.Context) error {
+	name := ctx.Param("name")
+	fmt.Println(name)
+	if name == "" {
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"s":    "名字不能为空",
+			"data": false,
+		})
 	}
-	token := context.Get("token")
+	daoActor := dao.NewDaoActor()
+	actor := daoActor.SelectByName(name)
+	if actor == nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"s":    "找不到该演员",
+			"data": false,
+		})
+	}
+	daoFilm := dao.NewDaoFilm()
+	films := daoFilm.FindByActorId(actor.Id_)
+	if films == nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"s":    "找不到该演员的作品",
+			"data": false,
+		})
+	}
+	//filmsName := make([]string, len(*films))
+	//for idx, film := range *films {
+	//	filmsName[idx] = film.Name
+	//}
 
-	//daoUser := dao.NewDaoUser()
-	//user := daoUser.SelectByAppToken(token.(string))
-	////daoClt := dao.NewColletion()
-	//daoFile := dao.NewDaoBTFileContent()
-	//daoFile.SelectByName(f.BTFileName)
-	//
-	//newObj := models.NewColletion()
-	////newObj.FilmRef.Id_ = f.FilmName
-	//newObj.Content = f.Content
-	//
-	//newObj.BTLink = f.BTLink
-	//newObj.LocalPath = f.LocalPath
-	//newObj.Shapeness = models.Shapeness(f.Shapeness)
-	//newObj.UserRef.Id = user.Id_
-	fmt.Println(token)
-	fmt.Println(f)
-	return context.String(http.StatusOK, "ok")
+	//fmt.Println(filmsName)
+	return ctx.JSON(http.StatusOK, map[string]interface{}{
+		"s":    films,
+		"data": true,
+	})
 }

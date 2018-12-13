@@ -44,6 +44,19 @@ func runWeb(context *cli.Context) error {
 	echo.NotFoundHandler = func(c echo.Context) error {
 		return c.File("src/view/404.html")
 	}
+	//{
+	//	daoFilm := dao.NewDaoFilm()
+	//	daoActor := dao.NewDaoActor()
+	//	actor := daoActor.SelectByName("小川桃果")
+	//	obj := models.NewFilm()
+	//	obj.Name = "xxxx"
+	//	obj.Size = 1212
+	//	obj.ActorRef.Id = actor.Id_
+	//	ok := daoFilm.InsertOne(obj)
+	//	if !ok {
+	//		fmt.Println("插入失败")
+	//	}
+	//}
 	e := echo.New()
 	e.Static("/", "src/view")
 	e.File("/favicon.ico", "/images/play.ico")
@@ -83,6 +96,7 @@ func runWeb(context *cli.Context) error {
 			"data": true,
 		})
 	})
+	e.GET("/actors/:name", service.FindActorFilm)
 	//e.GET("/c", service.C)
 	admin := e.Group("/admin")
 	{
@@ -135,6 +149,15 @@ func runWeb(context *cli.Context) error {
 		g.GET("/download/:filename", service.Download)
 		g.POST("/fs", service.NewFilm, ServiceController)
 	}
+	u := e.Group("/user", ServiceController)
+	{
+		u.GET("/tags", service.GetTags)
+		u.GET("/tag/:tname", service.GetTagDetail)
+		u.POST("/tag", service.NewTag)
+
+		u.GET("/Collections", service.GetColletions)
+		u.GET("/Collection", service.GetCollectionUnderTag)
+	}
 	e.Logger.Fatal(e.Start(setting.Port))
 	return nil
 
@@ -147,14 +170,15 @@ func ServiceController(next echo.HandlerFunc) echo.HandlerFunc {
 		ctl.C = context
 		token := ctl.GetUserToken()
 		if token == "" {
-			return ctl.C.String(http.StatusUnauthorized, "请先登录")
+			return ctl.C.Redirect(http.StatusFound, "/login")
 		}
 
 		daoUser := dao.NewDaoUser()
 		user := daoUser.SelectByAppToken(token)
 		if user == nil {
-			return ctl.C.String(http.StatusUnauthorized, "非法token")
+			return context.String(http.StatusUnauthorized, "非法token")
 		}
+
 		context.Set("token", token)
 		return next(context)
 	}

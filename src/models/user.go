@@ -24,12 +24,12 @@ var DefaultAuthor = HasSuperAuAuthorization_GetUserData | HasSuperAuAuthorizatio
 type User struct {
 	Id_           bson.ObjectId `bson:"_id"`
 	Email         string        `bson:"email" ` //邮箱
-	Username      string
-	IsConfirmed   bool   `bson:"is_confirmed"`
-	Password      string `bson:"password"` //密码，以md5形式储存
-	Salt          string `bson:"salt"`
-	Session       string `bson:"session"`
-	Token         string `bson:"token"` //登录令牌
+	Username      string        `bson:"username"`
+	IsConfirmed   bool          `bson:"is_confirmed"`
+	Password      string        `bson:"password"` //密码，以md5形式储存
+	Salt          string        `bson:"salt"`
+	Session       string        `bson:"session"`
+	Token         string        `bson:"token"` //登录令牌
 	Authorization int
 	CreateTime    time.Time `bson:"create_time"`
 

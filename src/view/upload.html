@@ -6,487 +6,686 @@
    -->
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <title>Pet Found Form a Flat Responsive Widget Template :: w3layouts </title>
-      <!-- Meta tags -->
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-      <meta name="keywords" content="Pet Found Form Responsive Widget, Audio and Video players, Login Form Web Template, Flat Pricing Tables, Flat Drop-Downs, Sign-Up Web Templates, Flat Web Templates, Login Sign-up Responsive Web Template, Smartphone Compatible Web Template, Free Web Designs for Nokia, Samsung, LG, Sony Ericsson, Motorola Web Design"
-         />
-      <script>
-         addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }
-      </script>
-       <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
-       {{/*<script src="http://malsup.github.io/min/jquery.form.min.js" type="text/javascript"></script>*/}}
-       <script src="http://how2j.cn/study/vue.min.js"></script>
-       <script src="http://how2j.cn/study/fetch.min.js"></script>
-       <script src="/js/ajaxfileupload.js"></script>
-       <script type="text/javascript">
-           function uploadFile(obj, type) {
+<head>
+    <title>Pet Found Form a Flat Responsive Widget Template :: w3layouts </title>
+    <!-- Meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="keywords"
+          content="Pet Found Form Responsive Widget, Audio and Video players, Login Form Web Template, Flat Pricing Tables, Flat Drop-Downs, Sign-Up Web Templates, Flat Web Templates, Login Sign-up Responsive Web Template, Smartphone Compatible Web Template, Free Web Designs for Nokia, Samsung, LG, Sony Ericsson, Motorola Web Design"
+    />
+    <script>
+        addEventListener("load", function () {
+            setTimeout(hideURLbar, 0);
+        }, false);
 
-               $.ajaxFileUpload({
-                   url : "/v1/upload",
-                   secureuri : false,// 一般设置为false
-                   fileElementId : "fileUpload"+type,// 文件上传表单的id <input type="file" id="fileUpload" name="file" />
-                   dataType : 'json',// 返回值类型 一般设置为json
-                   data: {'type': type},
-                   type: "post",
+        function hideURLbar() {
+            window.scrollTo(0, 1);
+        }
+    </script>
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
+{{/*<script src="http://malsup.github.io/min/jquery.form.min.js" type="text/javascript"></script>*/}}
+    <script src="http://how2j.cn/study/vue.min.js"></script>
+    <script src="http://how2j.cn/study/fetch.min.js"></script>
+    <script src="/js/ajaxfileupload.js"></script>
+    <script type="text/javascript">
+        function uploadFile(obj, type) {
 
-                   success : function(data) // 服务器成功响应处理函数
-                   {
-                        // $("#fileUpload1").hide();
-                       $("#bsonId").val(data.name);
-                       alert(data.name);
+            $.ajaxFileUpload({
+                url: "/v1/upload",
+                secureuri: false,// 一般设置为false
+                fileElementId: "fileUpload" + type,// 文件上传表单的id <input type="file" id="fileUpload" name="file" />
+                dataType: 'json',// 返回值类型 一般设置为json
+                data: {'type': type},
+                type: "post",
 
-                   },
-                   error : function(data)// 服务器响应失败处理函数
-                   {
-                       console.log("服务器异常");
-                   }
-               });
-               return false;
-           }
+                success: function (data) // 服务器成功响应处理函数
+                {
+                    // $("#fileUpload1").hide();
+                    $("#bsonId").val(data.name);
+                    alert(data.name);
 
-           function showHint(str)
-           {
-               var url = "/search?keyword="+str;
-               fetch(url).then(function(response) {
-                   response.json().then(function (jsonObject) {
-                       console.log(response.status);
-                      keydata(jsonObject["s"])
+                },
+                error: function (data)// 服务器响应失败处理函数
+                {
+                    console.log("服务器异常");
+                }
+            });
+            return false;
+        }
 
-                   })
-               }).catch(function(err){
-                   console.log("Fetch错误:"+err);
-               });
-           }
+        function showHint(str) {
+            var url = "/search?keyword=" + str;
+            fetch(url).then(function (response) {
+                response.json().then(function (jsonObject) {
+                    console.log(response.status);
+                    keydata(jsonObject["s"])
 
-           function keydata(keys){
-               var len=keys.length;
-               var keywordbox=$(".kkw");//关键词盒子
-               var textb=$(".main-bothside form #name");
-               var subb=$("#search_bg #button_bg form .subb");
-               if(len==0){
-                   keywordbox.css({display:"none"});
-               }else{
-                   keywordbox.css({display:"block"});
-               }
-               var spans="";
-               for(var i=0;i<len;i++)
-               {
-                   spans+="<span style='display: block'>"+keys[i]+"</span>"+"\n"
-               }
-               keywordbox.html(spans);//把关键词写入关键词盒子
-               keywordbox.animate({
-                   height:(keywordbox.children().height()+1)*len//关键词下滑效果
-               },100);
-               //点击候选词汇
-               keywordbox.children().click(function(){
-                   textb.val($(this).html());//选中词汇放入输入框
+                })
+            }).catch(function (err) {
+                console.log("Fetch错误:" + err);
+            });
+        }
 
-                   keywordbox.animate({
-                       height:0//关键盒子收缩效果
-                   },10,function(){
-                       keywordbox.css({display:"none",height:"auto"});
-                       keywordbox.empty();//清空盒子内容
-                   });
+        function keydata(keys) {
+            var len = keys.length;
+            var keywordbox = $(".kkw");//关键词盒子
+            var textb = $(".main-bothside form #name");
+            var subb = $("#search_bg #button_bg form .subb");
+            if (len == 0) {
+                keywordbox.css({display: "none"});
+            } else {
+                keywordbox.css({display: "block"});
+            }
+            var spans = "";
+            for (var i = 0; i < len; i++) {
+                spans += "<span style='display: block'>" + keys[i] + "</span>" + "\n"
+            }
+            keywordbox.html(spans);//把关键词写入关键词盒子
+            keywordbox.animate({
+                height: (keywordbox.children().height() + 1) * len//关键词下滑效果
+            }, 100);
+            //点击候选词汇
+            keywordbox.children().click(function () {
+                textb.val($(this).html());//选中词汇放入输入框
+                showHint2($(this).html());
+                keywordbox.animate({
+                    height: 0//关键盒子收缩效果
+                }, 10, function () {
+                    keywordbox.css({display: "none", height: "auto"});
+                    keywordbox.empty();//清空盒子内容
+                });
 
-                   textb.focus();//输入框获取焦点*/
-                   // $("#search_bg #button_bg form").submit();//提交搜索
-               });
+                textb.focus();//输入框获取焦点*/
+                // $("#search_bg #button_bg form").submit();//提交搜索
+            });
 
-               //提交按钮获取焦点后
-               subb.focus(function(){//提交按钮获取焦点后
-                   keywordbox.animate({
-                       height:0//关键盒子收缩效果
-                   },10,function(){
-                       keywordbox.css({display:"none",height:"auto"});
-                       keywordbox.empty();//清空盒子内容
-                   });
-               });
+            //提交按钮获取焦点后
+            subb.focus(function () {//提交按钮获取焦点后
+                keywordbox.animate({
+                    height: 0//关键盒子收缩效果
+                }, 10, function () {
+                    keywordbox.css({display: "none", height: "auto"});
+                    keywordbox.empty();//清空盒子内容
+                });
+            });
 
-               /*textb.blur(function(){//输入框失去焦点后收缩关键词盒子(此方法会与点击候选词方法冲突造成失效)
-                 keywordbox.animate({
-                   height:0//关键盒子收缩效果
-                 },100,function(){
-                   keywordbox.css({display:"none",height:"auto"});
-                   keywordbox.empty();//清空盒子内容
-                 });
-               });*/
-               // keywordbox.mouseleave(function(){//鼠标离开关键字盒子后收缩关键词盒子（取代上一个方法）
-               //     keywordbox.animate({
-               //         height:0//关键盒子收缩效果
-               //     },100,function(){
-               //         keywordbox.css({display:"none",height:"auto"});
-               //         keywordbox.empty();//清空盒子内容
-               //     });
-               // });
-               var numspan=0;//用来指定选择候选词（通过方向键改变）
-               textb.keydown(function(event){//如果使用回车提交时，关键词盒子也可以自动收缩
-                   if(event.which==13){
-                       keywordbox.animate({
-                           height:0//关键盒子收缩效果
-                       },10,function(){
-                           keywordbox.css({display:"none",height:"auto"});
-                           keywordbox.empty();//清空盒子内容
-                       });
-                       /*$("#search_bg #button_bg form").submit(function(){
-                         return false;//阻止提交
-                       });*/
-                       /*$("#search_bg #button_bg form").submit(function(e){
-                         e.preventDefault();//阻止提交方法2
-                       });*/
-                   }
-                   //按下下方向键
-                   if(event.which==40){
+            /*textb.blur(function(){//输入框失去焦点后收缩关键词盒子(此方法会与点击候选词方法冲突造成失效)
+              keywordbox.animate({
+                height:0//关键盒子收缩效果
+              },100,function(){
+                keywordbox.css({display:"none",height:"auto"});
+                keywordbox.empty();//清空盒子内容
+              });
+            });*/
+            // keywordbox.mouseleave(function(){//鼠标离开关键字盒子后收缩关键词盒子（取代上一个方法）
+            //     keywordbox.animate({
+            //         height:0//关键盒子收缩效果
+            //     },100,function(){
+            //         keywordbox.css({display:"none",height:"auto"});
+            //         keywordbox.empty();//清空盒子内容
+            //     });
+            // });
+            var numspan = 0;//用来指定选择候选词（通过方向键改变）
+            textb.keydown(function (event) {//如果使用回车提交时，关键词盒子也可以自动收缩
+                if (event.which == 13) {
+                    keywordbox.animate({
+                        height: 0//关键盒子收缩效果
+                    }, 10, function () {
+                        keywordbox.css({display: "none", height: "auto"});
+                        keywordbox.empty();//清空盒子内容
+                    });
+                    /*$("#search_bg #button_bg form").submit(function(){
+                      return false;//阻止提交
+                    });*/
+                    /*$("#search_bg #button_bg form").submit(function(e){
+                      e.preventDefault();//阻止提交方法2
+                    });*/
+                }
+                //按下下方向键
+                if (event.which == 40) {
 
-                       if(numspan==len)
-                           numspan=0;
-                       for(var i=0;i<len;i++){
-                           if(numspan==i){
-                               keywordbox.children().eq(i).css({
-                                   "background-color":"rgba(0,0,0,0.3)"
-                               });
-                           }else{
-                               keywordbox.children().eq(i).css({
-                                   "background-color":"rgba(255,255,255,0.3)"
-                               });
-                           }
-                       }
-                       textb.val(keywordbox.children().eq(numspan).html());
-                       numspan++;
-                   }
-                   //按下上方向键
-                   if(event.which==38){
+                    if (numspan == len)
+                        numspan = 0;
+                    for (var i = 0; i < len; i++) {
+                        if (numspan == i) {
+                            keywordbox.children().eq(i).css({
+                                "background-color": "rgba(0,0,0,0.3)"
+                            });
+                        } else {
+                            keywordbox.children().eq(i).css({
+                                "background-color": "rgba(255,255,255,0.3)"
+                            });
+                        }
+                    }
+                    textb.val(keywordbox.children().eq(numspan).html());
+                    numspan++;
+                }
+                //按下上方向键
+                if (event.which == 38) {
 
-                       numspan--;
-                       if(numspan==len)
-                           numspan=0;
-                       for(var i=0;i<len;i++){
-                           if(numspan==i){
-                               keywordbox.children().eq(i).css({
-                                   "background-color":"rgba(0,0,0,0.3)"
-                               });
-                           }else{
-                               keywordbox.children().eq(i).css({
-                                   "background-color":"rgba(255,255,255,0.3)"
-                               });
-                           }
-                       }
-                       textb.val(keywordbox.children().eq(numspan).html());
+                    numspan--;
+                    if (numspan == len)
+                        numspan = 0;
+                    for (var i = 0; i < len; i++) {
+                        if (numspan == i) {
+                            keywordbox.children().eq(i).css({
+                                "background-color": "rgba(0,0,0,0.3)"
+                            });
+                        } else {
+                            keywordbox.children().eq(i).css({
+                                "background-color": "rgba(255,255,255,0.3)"
+                            });
+                        }
+                    }
+                    textb.val(keywordbox.children().eq(numspan).html());
 
-                   }
-               });
-               keywordbox.children().mouseover(function(){
-                   numspan=$(this).index();
-                   for(var i=0;i<len;i++){
-                       if(numspan==i){
-                           keywordbox.children().eq(i).css({
-                               "background-color":"rgba(0,0,0,0.3)"
-                           });
-                       }else{
-                           keywordbox.children().eq(i).css({
-                               "background-color":"rgba(255,255,255,0.3)"
-                           });
-                       }
-                   }
-                   textb.val(keywordbox.children().eq(numspan).html());
-               });
+                }
+            });
+            keywordbox.children().mouseover(function () {
+                numspan = $(this).index();
+                for (var i = 0; i < len; i++) {
+                    if (numspan == i) {
+                        keywordbox.children().eq(i).css({
+                            "background-color": "rgba(0,0,0,0.3)"
+                        });
+                    } else {
+                        keywordbox.children().eq(i).css({
+                            "background-color": "rgba(255,255,255,0.3)"
+                        });
+                    }
+                }
+                textb.val(keywordbox.children().eq(numspan).html());
+            });
 
-           }
+        }
 
-function keydata1(keys){
-               var len=keys.length;
-               var keywordbox=$(".kkw1");//关键词盒子
-               var textb=$(".main-bothside form #name");
-               var subb=$("#search_bg #button_bg form .subb");
-               if(len==0){
-                   keywordbox.css({display:"none"});
-               }else{
-                   keywordbox.css({display:"block"});
-               }
-               var spans="";
-               for(var i=0;i<len;i++)
-               {
-                   spans+="<span style='display: block'>"+keys[i]+"</span>"+"\n"
-               }
-               keywordbox.html(spans);//把关键词写入关键词盒子
-               keywordbox.animate({
-                   height:(keywordbox.children().height()+1)*len//关键词下滑效果
-               },100);
-               //点击候选词汇
-               keywordbox.children().click(function(){
-                   textb.val($(this).html());//选中词汇放入输入框
+        function keydata1(keys) {
+            var len = keys.length;
+            var keywordbox = $(".kkw1");//关键词盒子
+            var textb = $(".main-bothside form #name");
+            var subb = $("#search_bg #button_bg form .subb");
+            if (len == 0) {
+                keywordbox.css({display: "none"});
+            } else {
+                keywordbox.css({display: "block"});
+            }
+            var spans = "";
+            for (var i = 0; i < len; i++) {
+                spans += "<span style='display: block'>" + keys[i] + "</span>" + "\n"
+            }
+            keywordbox.html(spans);//把关键词写入关键词盒子
+            keywordbox.animate({
+                height: (keywordbox.children().height() + 1) * len//关键词下滑效果
+            }, 100);
+            //点击候选词汇
+            keywordbox.children().click(function () {
+                console.log($(this).html());
+                textb.val($(this).html());//选中词汇放入输入框
+                keywordbox.animate({
+                    height: 0//关键盒子收缩效果
+                }, 10, function () {
+                    keywordbox.css({display: "none", height: "auto"});
+                    keywordbox.empty();//清空盒子内容
+                });
 
-                   keywordbox.animate({
-                       height:0//关键盒子收缩效果
-                   },10,function(){
-                       keywordbox.css({display:"none",height:"auto"});
-                       keywordbox.empty();//清空盒子内容
-                   });
+                textb.focus();//输入框获取焦点*/
+                // $("#search_bg #button_bg form").submit();//提交搜索
+            });
 
-                   textb.focus();//输入框获取焦点*/
-                   // $("#search_bg #button_bg form").submit();//提交搜索
-               });
+            //提交按钮获取焦点后
+            subb.focus(function () {//提交按钮获取焦点后
+                keywordbox.animate({
+                    height: 0//关键盒子收缩效果
+                }, 10, function () {
+                    keywordbox.css({display: "none", height: "auto"});
+                    keywordbox.empty();//清空盒子内容
+                });
+            });
 
-               //提交按钮获取焦点后
-               subb.focus(function(){//提交按钮获取焦点后
-                   keywordbox.animate({
-                       height:0//关键盒子收缩效果
-                   },10,function(){
-                       keywordbox.css({display:"none",height:"auto"});
-                       keywordbox.empty();//清空盒子内容
-                   });
-               });
+            /*textb.blur(function(){//输入框失去焦点后收缩关键词盒子(此方法会与点击候选词方法冲突造成失效)
+              keywordbox.animate({
+                height:0//关键盒子收缩效果
+              },100,function(){
+                keywordbox.css({display:"none",height:"auto"});
+                keywordbox.empty();//清空盒子内容
+              });
+            });*/
+            // keywordbox.mouseleave(function(){//鼠标离开关键字盒子后收缩关键词盒子（取代上一个方法）
+            //     keywordbox.animate({
+            //         height:0//关键盒子收缩效果
+            //     },100,function(){
+            //         keywordbox.css({display:"none",height:"auto"});
+            //         keywordbox.empty();//清空盒子内容
+            //     });
+            // });
+            var numspan = 0;//用来指定选择候选词（通过方向键改变）
+            textb.keydown(function (event) {//如果使用回车提交时，关键词盒子也可以自动收缩
+                if (event.which == 13) {
+                    keywordbox.animate({
+                        height: 0//关键盒子收缩效果
+                    }, 10, function () {
+                        keywordbox.css({display: "none", height: "auto"});
+                        keywordbox.empty();//清空盒子内容
+                    });
+                    /*$("#search_bg #button_bg form").submit(function(){
+                      return false;//阻止提交
+                    });*/
+                    /*$("#search_bg #button_bg form").submit(function(e){
+                      e.preventDefault();//阻止提交方法2
+                    });*/
+                }
+                //按下下方向键
+                if (event.which == 40) {
 
-               /*textb.blur(function(){//输入框失去焦点后收缩关键词盒子(此方法会与点击候选词方法冲突造成失效)
-                 keywordbox.animate({
-                   height:0//关键盒子收缩效果
-                 },100,function(){
-                   keywordbox.css({display:"none",height:"auto"});
-                   keywordbox.empty();//清空盒子内容
-                 });
-               });*/
-               // keywordbox.mouseleave(function(){//鼠标离开关键字盒子后收缩关键词盒子（取代上一个方法）
-               //     keywordbox.animate({
-               //         height:0//关键盒子收缩效果
-               //     },100,function(){
-               //         keywordbox.css({display:"none",height:"auto"});
-               //         keywordbox.empty();//清空盒子内容
-               //     });
-               // });
-               var numspan=0;//用来指定选择候选词（通过方向键改变）
-               textb.keydown(function(event){//如果使用回车提交时，关键词盒子也可以自动收缩
-                   if(event.which==13){
-                       keywordbox.animate({
-                           height:0//关键盒子收缩效果
-                       },10,function(){
-                           keywordbox.css({display:"none",height:"auto"});
-                           keywordbox.empty();//清空盒子内容
-                       });
-                       /*$("#search_bg #button_bg form").submit(function(){
-                         return false;//阻止提交
-                       });*/
-                       /*$("#search_bg #button_bg form").submit(function(e){
-                         e.preventDefault();//阻止提交方法2
-                       });*/
-                   }
-                   //按下下方向键
-                   if(event.which==40){
+                    if (numspan == len)
+                        numspan = 0;
+                    for (var i = 0; i < len; i++) {
+                        if (numspan == i) {
+                            keywordbox.children().eq(i).css({
+                                "background-color": "rgba(0,0,0,0.3)"
+                            });
+                        } else {
+                            keywordbox.children().eq(i).css({
+                                "background-color": "rgba(255,255,255,0.3)"
+                            });
+                        }
+                    }
+                    textb.val(keywordbox.children().eq(numspan).html());
+                    numspan++;
+                }
+                //按下上方向键
+                if (event.which == 38) {
 
-                       if(numspan==len)
-                           numspan=0;
-                       for(var i=0;i<len;i++){
-                           if(numspan==i){
-                               keywordbox.children().eq(i).css({
-                                   "background-color":"rgba(0,0,0,0.3)"
-                               });
-                           }else{
-                               keywordbox.children().eq(i).css({
-                                   "background-color":"rgba(255,255,255,0.3)"
-                               });
-                           }
-                       }
-                       textb.val(keywordbox.children().eq(numspan).html());
-                       numspan++;
-                   }
-                   //按下上方向键
-                   if(event.which==38){
+                    numspan--;
+                    if (numspan == len)
+                        numspan = 0;
+                    for (var i = 0; i < len; i++) {
+                        if (numspan == i) {
+                            keywordbox.children().eq(i).css({
+                                "background-color": "rgba(0,0,0,0.3)"
+                            });
+                        } else {
+                            keywordbox.children().eq(i).css({
+                                "background-color": "rgba(255,255,255,0.3)"
+                            });
+                        }
+                    }
+                    textb.val(keywordbox.children().eq(numspan).html());
 
-                       numspan--;
-                       if(numspan==len)
-                           numspan=0;
-                       for(var i=0;i<len;i++){
-                           if(numspan==i){
-                               keywordbox.children().eq(i).css({
-                                   "background-color":"rgba(0,0,0,0.3)"
-                               });
-                           }else{
-                               keywordbox.children().eq(i).css({
-                                   "background-color":"rgba(255,255,255,0.3)"
-                               });
-                           }
-                       }
-                       textb.val(keywordbox.children().eq(numspan).html());
+                }
+            });
+            keywordbox.children().mouseover(function () {
+                numspan = $(this).index();
+                for (var i = 0; i < len; i++) {
+                    if (numspan == i) {
+                        keywordbox.children().eq(i).css({
+                            "background-color": "rgba(0,0,0,0.3)"
+                        });
+                    } else {
+                        keywordbox.children().eq(i).css({
+                            "background-color": "rgba(255,255,255,0.3)"
+                        });
+                    }
+                }
+                textb.val(keywordbox.children().eq(numspan).html());
+            });
 
-                   }
-               });
-               keywordbox.children().mouseover(function(){
-                   numspan=$(this).index();
-                   for(var i=0;i<len;i++){
-                       if(numspan==i){
-                           keywordbox.children().eq(i).css({
-                               "background-color":"rgba(0,0,0,0.3)"
-                           });
-                       }else{
-                           keywordbox.children().eq(i).css({
-                               "background-color":"rgba(255,255,255,0.3)"
-                           });
-                       }
-                   }
-                   textb.val(keywordbox.children().eq(numspan).html());
-               });
+        }
 
-           }
+        function keydatafilm(keys) {
+            var len = keys.length;
+            var keywordbox = $(".kkwfilm");//关键词盒子
+            var textb = $(".main-bothside form #Phone");
+            var textc = $(".main-bothside form #Address");
+            var textd = $(".main-bothside form #City");
+            var subb = $("#search_bg #button_bg form .subb");
+            console.log(keys);
+            //if (len == 0) {
+            //    keywordbox.css({display: "none"});
+            //} else {
+            //    keywordbox.css({display: "block"});
+            //}
+            var spans = "";
+            for (var i = 0; i < len; i++) {
+                spans += "<span style='display: block' data-userid =" + i + ">" + keys[i].Name + "</span>" + "\n"
+            }
+            spans += "<span style='display: block'>" + "没有我要找的作品" + "</span>" + "\n";
+            console.log(spans);
+            keywordbox.html(spans);//把关键词写入关键词盒子
+            // keywordbox.innerHTML(spans);
+            keywordbox.animate({
+                height: (keywordbox.children().height() + 1) * len + 1//关键词下滑效果
+            }, 100);
+            //点击候选词汇
+            keywordbox.children().click(function () {
+                textb.val($(this).html());//选中词汇放入输入框
+                idx = ($(this).data("userid"));
+                if ($(this).html() == "没有我要找的作品") {
+                    textb.val("");
+                } else {
+                    textc.val(keys[idx].ID_);
+                    textd.val(keys[idx].ActorRef.Id);
+                }
+
+                keywordbox.animate({
+                    height: 0//关键盒子收缩效果
+                }, 10, function () {
+                    keywordbox.css({display: "none", height: "auto"});
+                    keywordbox.empty();//清空盒子内容
+                });
+
+                textb.focus();//输入框获取焦点*/
+                // $("#search_bg #button_bg form").submit();//提交搜索
+            });
+
+            //提交按钮获取焦点后
+            subb.focus(function () {//提交按钮获取焦点后
+                keywordbox.animate({
+                    height: 0//关键盒子收缩效果
+                }, 10, function () {
+                    keywordbox.css({display: "none", height: "auto"});
+                    keywordbox.empty();//清空盒子内容
+                });
+            });
+
+            /*textb.blur(function(){//输入框失去焦点后收缩关键词盒子(此方法会与点击候选词方法冲突造成失效)
+              keywordbox.animate({
+                height:0//关键盒子收缩效果
+              },100,function(){
+                keywordbox.css({display:"none",height:"auto"});
+                keywordbox.empty();//清空盒子内容
+              });
+            });*/
+            // keywordbox.mouseleave(function(){//鼠标离开关键字盒子后收缩关键词盒子（取代上一个方法）
+            //     keywordbox.animate({
+            //         height:0//关键盒子收缩效果
+            //     },100,function(){
+            //         keywordbox.css({display:"none",height:"auto"});
+            //         keywordbox.empty();//清空盒子内容
+            //     });
+            // });
+            var numspan = 0;//用来指定选择候选词（通过方向键改变）
+            textb.keydown(function (event) {//如果使用回车提交时，关键词盒子也可以自动收缩
+                if (event.which == 13) {
+                    keywordbox.animate({
+                        height: 0//关键盒子收缩效果
+                    }, 10, function () {
+                        keywordbox.css({display: "none", height: "auto"});
+                        keywordbox.empty();//清空盒子内容
+                    });
+                    /*$("#search_bg #button_bg form").submit(function(){
+                      return false;//阻止提交
+                    });*/
+                    /*$("#search_bg #button_bg form").submit(function(e){
+                      e.preventDefault();//阻止提交方法2
+                    });*/
+                }
+                //按下下方向键
+                if (event.which == 40) {
+
+                    if (numspan == len)
+                        numspan = 0;
+                    for (var i = 0; i < len; i++) {
+                        if (numspan == i) {
+                            keywordbox.children().eq(i).css({
+                                "background-color": "rgba(0,0,0,0.3)"
+                            });
+                        } else {
+                            keywordbox.children().eq(i).css({
+                                "background-color": "rgba(255,255,255,0.3)"
+                            });
+                        }
+                    }
+                    textb.val(keywordbox.children().eq(numspan).html());
+                    numspan++;
+                }
+                //按下上方向键
+                if (event.which == 38) {
+
+                    numspan--;
+                    if (numspan == len)
+                        numspan = 0;
+                    for (var i = 0; i < len; i++) {
+                        if (numspan == i) {
+                            keywordbox.children().eq(i).css({
+                                "background-color": "rgba(0,0,0,0.3)"
+                            });
+                        } else {
+                            keywordbox.children().eq(i).css({
+                                "background-color": "rgba(255,255,255,0.3)"
+                            });
+                        }
+                    }
+                    textb.val(keywordbox.children().eq(numspan).html());
+
+                }
+            });
+            keywordbox.children().mouseover(function () {
+                numspan = $(this).index();
+                for (var i = 0; i < len; i++) {
+                    if (numspan == i) {
+                        keywordbox.children().eq(i).css({
+                            "background-color": "rgba(0,0,0,0.3)"
+                        });
+                    } else {
+                        keywordbox.children().eq(i).css({
+                            "background-color": "rgba(255,255,255,0.3)"
+                        });
+                    }
+                }
+                textb.val(keywordbox.children().eq(numspan).html());
+            });
+
+        }
+
 
     </script>
-      <!-- Meta tags -->
-      <!--stylesheets-->
-      <link href="/css/style4.css" rel='stylesheet' type='text/css' />
-      <!--//style sheet end here-->
-      <link href="//fonts.googleapis.com/css?family=Barlow:300,400,500" rel="stylesheet">
-   </head>
-   <body>
-      <h1 class="header-w3ls">
-          资源 上传
-      </h1>
-      <!-- multistep form -->
-      <div class="main-bothside">
-         <form action="/v1/fs" method="post" >
-            <div class="form-group" >
-               <div class="form-mid-w3ls">
-                   <input id="name" type="text" name="name"  placeholder="Name" required="" v-model="name">
-                  {{/*<input id="name" type="text" name="name"  placeholder="Name" required=""  onchange="showHint(this.value)" />*/}}
-                   <div class="kkw" style="display: block">
+    <!-- Meta tags -->
+    <!--stylesheets-->
+    <link href="/css/style4.css" rel='stylesheet' type='text/css'/>
+    <!--//style sheet end here-->
+    <link href="//fonts.googleapis.com/css?family=Barlow:300,400,500" rel="stylesheet">
+</head>
+<body>
+<h1 class="header-w3ls">
+    资源 上传
+</h1>
+<!-- multistep form -->
+<div class="main-bothside">
+    <form id="AllForm" action="/v1/fs" method="post">
+        <div class="form-group">
+            <div class="form-mid-w3ls">
+                <p>女优</p>
+                <input id="name" type="text" name="actor" placeholder="Name" required="" v-model="name">
+            {{/*<input id="name" type="text" name="name"  placeholder="Name" required=""  onchange="showHint(this.value)" />*/}}
+                <div class="kkw" style="display: block">
 
-                   </div>
-               </div>
-               <div class="form-mid-w3ls">
-                  <input type="email" name="Email" placeholder="Email" required="">
-               </div>
-               <div class="form-mid-w3ls">
-                  <input type="text" name="Phone" placeholder="Phone" required="">
-               </div>
+                </div>
             </div>
-            <div class="form-group">
-               <div class="form-mid-w3ls">
-                  <input type="text" name="City" placeholder="City" required="">
-               </div>
-               <div class="form-mid-w3ls">
-                  <input type="text" name="Address" placeholder="Address" required="">
-               </div>
-               <div class="form-mid-w3ls">
-                  <input type="text" name="State" placeholder="State" required="">
-               </div>
-            </div>
-            <div class="parent-clss">
-               <div class="personal-info">
-                  <p>Gender</p>
-                  <div class="form-check">
-                     <input class="form-check-input" type="radio" name="content" value="option1" checked="">
-                     <label class="form-check-label">
-                     Male
-                     </label>
-                  </div>
-                  <div class="form-check">
-                     <input class="form-check-input" type="radio" name="content" value="option2" checked="">
-                     <label class="form-check-label">
-                     Female
-                     </label>
-                  </div>
-               </div>
-               <div class="personal-info">
-                  <p>Pet</p>
-                  <div class="form-check">
-                     <input class="form-check-input" type="radio" name="bt_link" value="option3" checked="">
-                     <label class="form-check-label">
-                     Cat
-                     </label>
-                  </div>
-                  <div class="form-check">
-                     <input class="form-check-input" type="radio" name="bt_link" value="option4" checked="">
-                     <label class="form-check-label">
-                     Dog
-                     </label>
-                  </div>
-                  <div class="form-check">
-                     <input class="form-check-input" type="radio" name="bt_link" value="option5" checked="">
-                     <label class="form-check-label">
-                     Other
-                     </label>
-                  </div>
-               </div>
-               <div class="personal-info">
-                  <p>Identification</p>
-                  <div class="form-check">
-                     <input class="form-check-input" type="radio" name="local_path" value="option6" checked="">
-                     <label class="form-check-label">
-                     Tattooed
-                     </label>
-                  </div>
-                  <div class="form-check">
-                     <input class="form-check-input" type="radio" name="local_path" value="option7" checked="">
-                     <label class="form-check-label">
-                     Microchipped 
-                     </label>
-                     <div class="clear"></div>
-                  </div>
-                  <div class="form-check">
-                     <input class="form-check-input" type="radio" name="local_path" value="option8" checked="">
-                     <label class="form-check-label">
-                     Other
-                     </label>
-                  </div>
-               </div>
-            </div>
-            <div class="form-group">
-               <div class="form-mid-w3ls">
-                  <input type="text" name="shapeness" class="form-control" placeholder="shapeness">
-               </div>
-               <div class="form-mid-w3ls">
-                  <input type="email" name="Breed/type" placeholder="Breed/type">
-               </div>
-               <div class="form-mid-w3ls">
-                  <input type="text" name="film_name" placeholder="film_name">
-               </div>
-            </div>
-            <div class="form-control-w3l">
-               <textarea name="Message" name="name" placeholder="Any Message..."></textarea>
-            </div>
-            <div class="custom-file form-left-choose">
-               <input type="file" name="avatar" class="custom-file-input" id="fileUpload1" onchange ="uploadFile(this,1)">
-            </div>
-             <input type="text" id="bsonId" name="bt_file_name" value="Mickey Mouse">
-            <input type="submit" value="Submit">
-             {{/*<p>正面：<input name="file1" type="file" value="选择" size="20" id="fileUpload1" onchange ="uploadFile(this,1)"></p>*/}}
-         </form>
-      </div>
-      <div class="copy">
-         <p>©2018 Pet Found Form. All Rights Reserved | Design by <a href="http://www.W3Layouts.com" target="_blank">W3Layouts</a></p>
-      </div>
-      <script>
-          function showHint1(str)
-          {
-              var url = "/search?keyword="+str;
-              fetch(url).then(function(response) {
-                  response.json().then(function (jsonObject) {
-                      console.log(response.status);
-                      keydata(jsonObject["s"])
-                  })
-              }).catch(function(err){
-                  console.log("Fetch错误:"+err);
-              });
-          }
-          new Vue({
-              delimiters: ['[[', ']]'],
-              el: '#name',
-              data:{
-                  name:"",
-                  film:""
-              },
-              watch:{
-                  name:function(val) {
-                      this.name = val;
-                      console.log(this.name);
-                      showHint1(this.name);
-                  }
-                  film:function(val) {
-                    this.film = val;
-                    console.log(this.name);
+            <div class="form-mid-w3ls">
+                <p>标签</p>
+                <input type="text" name="tag_id" placeholder="标签" required="">
+                <div class="kkwfilm" style="display: block">
 
-              }
-          })
+                </div>
+            </div>
+            <div class="form-mid-w3ls">
+                <p>番号</p>
+                <input type="text" id="Phone" name="film_name" placeholder="番号----选择女优后自动匹配,若无匹配请填写" required="">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-mid-w3ls">
+                <p>出版商</p>
+                <input type="text" id="City" name="bt_link" placeholder="出版商-选择女优后自动匹配,若无匹配请填写" required="">
+            </div>
+            <div class="form-mid-w3ls">
+                <p>年份</p>
+                <input type="text" id="Address" name="Address" placeholder="年份-选择女优后自动匹配,若无匹配请填写" required="">
+            </div>
+            <div class="form-mid-w3ls">
+                <p>系列</p>
+                <input type="text" name="State" placeholder="State-选择女优后自动匹配,若无匹配请填写" required="">
+            </div>
+        </div>
+        <div class="parent-clss">
+            <div class="personal-info">
+                <p>是否有码</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="local_path" value="option1" checked="">
+                    <label class="form-check-label">
+                        有码
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="local_path" value="option2" checked="">
+                    <label class="form-check-label">
+                        无码
+                    </label>
+                </div>
+            </div>
+            <div class="personal-info">
+                <p>清晰度</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="shapeness" value="0" checked="">
+                    <label class="form-check-label">
+                        360P
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="shapeness" value="1" checked="">
+                    <label class="form-check-label">
+                        480P
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="shapeness" value="2" checked="">
+                    <label class="form-check-label">
+                        720P
+                    </label>
+                </div>
 
-      </script>
-   </body>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="shapeness" value="3" checked="">
+                    <label class="form-check-label">
+                        1080P
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="shapeness" value="4" checked="">
+                    <label class="form-check-label">
+                        2K
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="shapeness" value="-1" checked="">
+                    <label class="form-check-label">
+                        Other
+                    </label>
+                </div>
+            </div>
+            <div class="personal-info">
+                <p>Identification</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="local_path" value="option9" checked="">
+                    <label class="form-check-label">
+                        Tattooed
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="local_path" value="option10" checked="">
+                    <label class="form-check-label">
+                        Microchipped
+                    </label>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="local_path" value="option11" checked="">
+                    <label class="form-check-label">
+                        Other
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-mid-w3ls">
+                <input type="text" name="local_path" class="form-control" placeholder="localPath">
+            </div>
+            <div class="form-mid-w3ls">
+                <input type="email" name="Breed/type" placeholder="Breed/type">
+            </div>
+            <div class="form-mid-w3ls">
+                <input type="text" name="bt_link" placeholder="bt_link">
+            </div>
+        </div>
+        <div class="form-control-w3l">
+            <textarea  name="content" placeholder="影片备注...."></textarea>
+        </div>
+        <div class="custom-file form-left-choose">
+            <input type="file" name="avatar" class="custom-file-input" id="fileUpload1" onchange="uploadFile(this,1)">
+        </div>
+        <input type="hidden" id="bsonId" name="bt_file_name" value="Mickey Mouse">
+        <input type="submit" value="Submit">
+    {{/*<p>正面：<input name="file1" type="file" value="选择" size="20" id="fileUpload1" onchange ="uploadFile(this,1)"></p>*/}}
+    </form>
+</div>
+<div class="copy">
+    <p>©2018 Pet Found Form. All Rights Reserved | Design by <a href="http://www.W3Layouts.com" target="_blank">W3Layouts</a>
+    </p>
+</div>
+<script>
+    function showHint1(str) {
+        var url = "/search?keyword=" + str;
+        fetch(url).then(function (response) {
+            response.json().then(function (jsonObject) {
+                console.log(response.status);
+                keydata(jsonObject["s"])
+            })
+        }).catch(function (err) {
+            console.log("Fetch错误:" + err);
+        });
+    }
+
+    function showHint2(str) {
+        console.log(str);
+        var url = "/actors/" + str;
+        fetch(url).then(function (response) {
+            response.json().then(function (jsonObject) {
+                console.log(response.status);
+                if (!jsonObject["data"]) {
+                    document.getElementById("AllForm").reset();
+                }
+                keydatafilm(jsonObject["s"])
+            })
+        }).catch(function (err) {
+            console.log("Fetch错误:" + err);
+        });
+    }
+
+    new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#name',
+        data: {
+            name: "",
+            film: ""
+        },
+        watch: {
+            name: function (val) {
+                this.name = val;
+                console.log(this.name);
+                showHint1(this.name);
+            }
+            //     film:function(val) {
+            //       this.film = val;
+            //       console.log(this.name);
+            //
+            // }
+        }
+    })
+
+</script>
+</body>
 </html>

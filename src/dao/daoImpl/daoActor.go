@@ -43,7 +43,7 @@ func (this *daoActorImp) SelectByName(name string) *models.Actor {
 	var actor models.Actor
 	err := this.FindOne(bson.M{modelsDefine.MDActor_Name: name}, &actor)
 	if err != nil {
-		log.Error("未找到符合该token的用户", err)
+		log.Error("未找到符合的演员", err)
 		return nil
 	} else {
 		return &actor

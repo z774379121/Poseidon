@@ -11,11 +11,11 @@ const Collection_Name_Tag = "tag"
 
 type Tag struct {
 	Id_        bson.ObjectId `bson:"_id"`
-	Name       string
-	CreateTime time.Time
-	DeleteTime time.Time
-	IsDeleted  bool
-	UserRef    mgo.DBRef
+	Name       string        `bson:"name"`
+	CreateTime time.Time     `bson:"create_time"`
+	DeleteTime time.Time     `bson:"delete_time"`
+	IsDeleted  bool          `bson:"is_deleted"`
+	UserRef    mgo.DBRef     `bson:"user_ref"`
 }
 
 func NewTag() *Tag {

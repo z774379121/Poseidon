@@ -82,6 +82,11 @@ func Login(ctx echo.Context) error {
 	email := ctx.FormValue("email")
 	daoUser := dao.NewDaoUser()
 	userWithoutCheck := daoUser.SelectByEmailAll(email)
+	ctl := controller.NewBaseController(ctx)
+	ctl.C = ctx
+	if ctl.GetUserToken() != "" {
+		return ctl.C.Redirect(http.StatusFound, "/")
+	}
 	if userWithoutCheck == nil {
 		return ctx.String(http.StatusForbidden, "邮箱不存在")
 	}
@@ -92,10 +97,11 @@ func Login(ctx echo.Context) error {
 
 	if userWithoutCheck.ValidatePassword(pwd) {
 		userWithoutCheck.GenUserToken()
-		ctl := controller.NewBaseController(ctx)
 		ctl.SetToken("user", userWithoutCheck.GetAppToken())
+		ctl.ClearCookies()
 		ctl.SetCookies()
 		if !daoUser.UpdateSessionAndToken(userWithoutCheck.Id_, userWithoutCheck.Session, userWithoutCheck.Token) {
+			ctl.ClearCookies()
 			return ctx.String(http.StatusInternalServerError, "err")
 		}
 		return ctx.Redirect(http.StatusMovedPermanently, "/")

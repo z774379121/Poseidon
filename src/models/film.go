@@ -50,9 +50,9 @@ type Film struct {
 	IsPrimitive bool      `bson:"is_primitive"`
 	Size        int       `bson:"size"`
 	FriendShip  []string  `bson:"friend_ship"`
-	Dress       Dress
-	CreateTime  time.Time
-	Topic       Topic
+	Dress       Dress     `bson:"dress"`
+	CreateTime  time.Time `bson:"create_time"`
+	Topic       Topic     `bson:"topic"`
 }
 
 func NewFilm() *Film {

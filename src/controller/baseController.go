@@ -3,6 +3,8 @@ package controller
 import (
 	"fmt"
 	"github.com/labstack/echo"
+	"github.com/z774379121/untitled1/src/dao"
+	"github.com/z774379121/untitled1/src/models"
 	"net/http"
 	"time"
 )
@@ -41,7 +43,7 @@ func (this *BaseController) GetUserToken() string {
 
 func (this *BaseController) GetTokenType() string {
 	cookie, err := this.C.Cookie(Key_cookie_Token_Type)
-	if err != nil {
+	if err != nil || cookie == nil {
 		fmt.Println("不存在")
 		return ""
 	}
@@ -49,13 +51,18 @@ func (this *BaseController) GetTokenType() string {
 }
 
 func (this *BaseController) SetCookies() {
-	this.C.SetCookie(&http.Cookie{Name: Key_cookie_UserToken, Value: this.UserToken, Expires: time.Now().Add(time.Hour * 2)})
-	this.C.SetCookie(&http.Cookie{Name: Key_cookie_Time, Value: time.Now().Format("20060102150405"), Expires: time.Now().Add(time.Hour * 2)})
-	this.C.SetCookie(&http.Cookie{Name: Key_cookie_Token_Type, Value: this.TokenType, Expires: time.Now().Add(time.Hour * 2)})
+	this.C.SetCookie(&http.Cookie{Name: Key_cookie_UserToken, Value: this.UserToken, Expires: time.Now().Add(time.Hour * 2), Path: "/"})
+	this.C.SetCookie(&http.Cookie{Name: Key_cookie_Time, Value: time.Now().Format("20060102150405"), Expires: time.Now().Add(time.Hour * 2), Path: "/"})
+	this.C.SetCookie(&http.Cookie{Name: Key_cookie_Token_Type, Value: this.TokenType, Expires: time.Now().Add(time.Hour * 2), Path: "/"})
 }
 
 func (this *BaseController) ClearCookies() {
-	this.C.SetCookie(&http.Cookie{Name: Key_cookie_UserToken, Value: "", Expires: time.Now()})
-	this.C.SetCookie(&http.Cookie{Name: Key_cookie_Time, Value: "", Expires: time.Now()})
-	this.C.SetCookie(&http.Cookie{Name: Key_cookie_Token_Type, Value: "", Expires: time.Now()})
+	this.C.SetCookie(&http.Cookie{Name: Key_cookie_UserToken, Value: "", Expires: time.Now(), Path: "/"})
+	this.C.SetCookie(&http.Cookie{Name: Key_cookie_Time, Value: "", Expires: time.Now(), Path: "/"})
+	this.C.SetCookie(&http.Cookie{Name: Key_cookie_Token_Type, Value: "", Expires: time.Now(), Path: "/"})
+}
+
+func GetUser(token string) *models.User {
+	daoUser := dao.NewDaoUser()
+	return daoUser.SelectByAppToken(token)
 }
