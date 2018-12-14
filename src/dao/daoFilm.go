@@ -9,6 +9,7 @@ import (
 type daoFilm interface {
 	FindByActorId(id bson.ObjectId) *[]models.Film
 	InsertOne(film *models.Film) bool
+	FindByCode(code string) *models.Film
 }
 
 func NewDaoFilm() daoFilm {

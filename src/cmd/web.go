@@ -148,6 +148,9 @@ func runWeb(context *cli.Context) error {
 		g.POST("/upload", service.UpLoad)
 		g.GET("/download/:filename", service.Download)
 		g.POST("/fs", service.NewFilm, ServiceController)
+		g.GET("/fs", func(context echo.Context) error {
+			return context.Render(http.StatusOK, "films.html", nil)
+		})
 	}
 	u := e.Group("/user", ServiceController)
 	{

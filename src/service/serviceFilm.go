@@ -3,14 +3,13 @@ package service
 import (
 	"bytes"
 	"fmt"
-	"io"
-	"net/http"
-	"os"
-
 	"github.com/labstack/echo"
 	"github.com/z774379121/untitled1/src/dao"
 	"github.com/z774379121/untitled1/src/xm/common"
 	"gopkg.in/mgo.v2/bson"
+	"io"
+	"net/http"
+	"os"
 )
 
 /***
@@ -106,6 +105,16 @@ type FilmStruct struct {
 	BTLink     string `form:"bt_link"`
 	LocalPath  string `form:"local_path"`
 	TagId      string `form:"tag_id"`
+}
+
+type FNewFilm struct {
+	Code        string `json:"code"`
+	Actor       string `json:"actor"`
+	IsPrimitive bool   `json:"is_primitive"`
+	Date        string `json:"date"`
+	Publisher   int    `json:"publisher"`
+	Publisher1  int    `json:"publisher1"`
+	Serice      string `json:"serice"`
 }
 
 func FindActorFilm(ctx echo.Context) error {

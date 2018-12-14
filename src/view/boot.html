@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <!-- Required meta tags -->
@@ -15,83 +15,125 @@
 {{range $i, $v := .users}}
 <p>{{$v.Avatar}}</p>
 {{end}}
-<div class="container-fluid">
-    <div class="row-fluid">
-        <div class="span12">
-            <h3 class="text-center">
-                h3. 这是一套可视化布局系统.
-            </h3>
-            <div class="row-fluid">
-                <div class="span4">
-                    <div class="row-fluid">
-                        <div class="span6">
-                            <img alt="140x140" src="img/a.jpg"/>
-                            <dl>
-                                <dt>
-                                    Rolex
-                                </dt>
-                                <dd>
-                                    劳力士创始人为汉斯.威尔斯多夫，1908年他在瑞士将劳力士注册为商标。
-                                </dd>
-                            </dl>
-                        </div>
-                        <div class="span6">
-                            <img alt="140x140" src="img/a.jpg"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="span4">
-                    <div class="row-fluid">
-                        <div class="span6">
-                            <img alt="140x140" src="img/a.jpg"/>
-                        </div>
-                        <div class="span6">
-                        </div>
-                    </div>
-                </div>
-                <div class="span4">
-                    <img alt="140x140" src="img/a.jpg"/>
-                </div>
-            </div>
-            <div class="pagination pagination-centered">
-                <ul>
-                    <li>
-                        <a href="#">上一页</a>
-                    </li>
-                    <li>
-                        <a href="#">1</a>
-                    </li>
-                    <li>
-                        <a href="#">2</a>
-                    </li>
-                    <li>
-                        <a href="#">3</a>
-                    </li>
-                    <li>
-                        <a href="#">4</a>
-                    </li>
-                    <li>
-                        <a href="#">5</a>
-                    </li>
-                    <li>
-                        <a href="#">下一页</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-            crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-            crossorigin="anonymous"></script>
+<form class="form-horizontal">
+    <fieldset>
+        <div id="legend" class="">
+            <input type="hidden" name="form_name" value="影库贡献" class="leipiplugins" leipiplugins="form_name">
+            <legend class="leipiplugins-orgvalue">影库贡献</legend>
+        </div>
+
+
+        <div class="control-group">
+            <label class="control-label leipiplugins-orgname">有无码</label>
+            <div class="controls leipiplugins-orgvalue"><!-- Multiple Checkboxes -->
+                <label class="radio inline">
+                    <input type="radio" name="leipiNewField" title="有无码" value="有码" orginline="inline"
+                           class="leipiplugins" leipiplugins="radio">有码
+                </label><label class="radio inline">
+                    <input type="radio" name="leipiNewField" title="有无码" value="无码" orginline="inline"
+                           class="leipiplugins" leipiplugins="radio">无码
+                </label></div>
+        </div>
+
+        <div class="control-group">
+            <!-- Text -->
+            <label class="control-label leipiplugins-orgname">番号</label>
+            <div class="controls">
+                <input name="leipiNewField" type="text" placeholder="请输入完整番号" title="番号"
+                       class="leipiplugins" leipiplugins="text">
+            </div>
+
+        </div>
+
+
+        <div class="control-group">
+            <!-- Select -->
+            <label class="control-label leipiplugins-orgname">出版商</label>
+            <div class="controls">
+                <select name="leipiNewField" title="出版商" class="leipiplugins" leipiplugins="select">
+                    <option>AKNR</option>
+                    <option>Alice Japan</option>
+                    <option>AROUND</option>
+                    <option>ATOM</option>
+                    <option>ATTACKERS</option>
+                    <option>BAZOOKA</option>
+                    <option>DANDY</option>
+                    <option>Deep’s</option>
+                    <option>EROTICA</option>
+                    <option>GARCON</option>
+                    <option>Hibino</option>
+                    <option>h.m.p</option>
+                    <option>Hunter</option>
+                    <option>IEnergy</option>
+                    <option>JHV集团</option>
+                    <option>kawaii*</option>
+                    <option>KEU</option>
+                    <option>kira☆kira</option>
+                    <option>KMProduce</option>
+                    <option>LADYxLADY</option>
+                    <option>Madonna</option>
+                    <option>MAX-A</option>
+                    <option>Nadeshiko</option>
+                    <option>Natural High</option>
+                    <option>NEW S&amp;EXUAL</option>
+                    <option>Prestige（蚊香社）</option>
+                    <option>Real Works</option>
+                    <option>ROCKET</option>
+                    <option>Sadistic Village</option>
+                    <option>SCOOP</option>
+                    <option>SOD集团</option>
+                    <option>SWITCH</option>
+                    <option>S級素人</option>
+                    <option>TMA</option>
+                    <option>V&amp;R Products</option>
+                    <option>Wanz Factory</option>
+                    <option>般领域</option>
+                    <option>九鬼（KUKI）</option>
+                    <option>溜池ゴロー</option>
+                    <option>人間考察</option>
+                    <option>桃太郎映像</option>
+                    <option>志摩プランニング</option>
+                </select>
+            </div>
+
+        </div>
+
+
+        <div class="control-group">
+            <!-- Text -->
+            <label class="control-label leipiplugins-orgname">时长</label>
+            <div class="controls">
+                <input name="leipiNewField" type="text" placeholder="请输入分钟数" title="时长" class="leipiplugins"
+                       leipiplugins="number">
+            </div>
+
+        </div>
+
+        <div class="control-group">
+            <!-- Text -->
+            <label class="control-label leipiplugins-orgname">主题</label>
+            <div class="controls">
+                <input name="leipiNewField" type="text" placeholder="多个主题以,分隔" title="主题"
+                       class="leipiplugins" leipiplugins="text">
+            </div>
+
+        </div>
+
+    </fieldset>
+</form>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
 </body>
 </html>

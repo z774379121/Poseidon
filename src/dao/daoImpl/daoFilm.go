@@ -2,6 +2,7 @@ package daoImpl
 
 import (
 	"fmt"
+	"github.com/labstack/gommon/log"
 	"github.com/z774379121/untitled1/src/dao/baseSession"
 	"github.com/z774379121/untitled1/src/models"
 	"github.com/z774379121/untitled1/src/models/modelsDefine"
@@ -10,6 +11,16 @@ import (
 
 type daoFilmImpl struct {
 	baseSession.BaseSession
+}
+
+func (this *daoFilmImpl) FindByCode(code string) *models.Film {
+	result := &models.Film{}
+	one := this.BaseSession.FindOne(bson.M{modelsDefine.MDFilm_Name: code}, result)
+	if one != nil {
+		log.Info("bad find", code)
+		return nil
+	}
+	return result
 }
 
 func NewDaoFilmImpl() *daoFilmImpl {
