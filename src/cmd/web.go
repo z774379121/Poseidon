@@ -65,15 +65,43 @@ func runWeb(context *cli.Context) error {
 	e.Use(middleware.Recover())
 
 	// begin router
-	e.GET("/", service.Hello)
+	e.GET("/", func(context echo.Context) error {
+		return context.File("src/view/main.html")
+	})
 	e.GET("/dp", service.DP)
 	e.POST("/signUp", service.SignUp)
 	e.GET("/signUp", service.SignUpH)
 	e.POST("/login", service.Login)
 	e.GET("/login", service.LoginH)
 	e.GET("/boot", service.Boot)
+	e.POST("/bootlike", service.BootLike)
 	e.GET("/actor/:id", service.GetActor)
 	e.GET("/actor", service.GetActorRegex)
+	e.GET("/film", service.FindHasCode)
+	api := e.Group("/api/vi")
+	{
+		api.GET("/actors/:name", service.FindActorFilm)
+		api.GET("/film", service.FindHasCode)
+		api.GET("/search", func(context echo.Context) error {
+			name := context.QueryParam("keyword")
+			daoActor := dao.NewDaoActor()
+			actors := daoActor.SelectLikeByName(name)
+			data := len(*actors)
+			if data > 10 {
+				data = 10
+			}
+			z := make([]string, 0, data)
+			actor := *actors
+			for i := 0; i < data; i++ {
+				actor := actor[i]
+				z = append(z, actor.Name)
+			}
+			return context.JSON(http.StatusOK, map[string]interface{}{
+				"s":    z,
+				"data": true,
+			})
+		})
+	}
 	e.GET("/ss", func(context echo.Context) error {
 		return context.Render(http.StatusOK, "sear.html", nil)
 	})
@@ -97,7 +125,6 @@ func runWeb(context *cli.Context) error {
 		})
 	})
 	e.GET("/actors/:name", service.FindActorFilm)
-	//e.GET("/c", service.C)
 	admin := e.Group("/admin")
 	{
 		admin.Use(ServiceController)

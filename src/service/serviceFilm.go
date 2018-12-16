@@ -153,3 +153,20 @@ func FindActorFilm(ctx echo.Context) error {
 		"data": true,
 	})
 }
+
+func FindHasCode(context echo.Context) error {
+	code := context.QueryParam("c")
+	fmt.Println(code)
+	daoFilm := dao.NewDaoFilm()
+	film := daoFilm.FindByCode(code)
+	context.Response().Header().Set("Access-Control-Allow-Origin", "*")
+	context.Response().Header().Add("Access-Control-Allow-Headers", "Content-Type") //header的类型
+	context.Response().Header().Set("content-type", "application/json")
+	if film == nil {
+		return context.JSON(http.StatusOK, map[string]interface{}{
+			"s": false})
+	} else {
+		return context.JSON(http.StatusOK, map[string]interface{}{
+			"s": true})
+	}
+}

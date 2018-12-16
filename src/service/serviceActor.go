@@ -18,7 +18,7 @@ func Boot(ctx echo.Context) error {
 		return ctx.String(http.StatusForbidden, "page over")
 	}
 	if err != nil {
-		return err
+		pageInt = 0
 	}
 	actors := daoActor.SelectByPage(pageInt)
 	return ctx.Render(http.StatusOK, "bs3.html", map[string]interface{}{
@@ -29,6 +29,17 @@ func Boot(ctx echo.Context) error {
 	})
 }
 
+func BootLike(ctx echo.Context) error {
+	name := ctx.FormValue("name")
+	daoActor := dao.NewDaoActor()
+	actors := daoActor.SelectLikeByName(name)
+	return ctx.Render(http.StatusOK, "bs3.html", map[string]interface{}{
+		"users": actors,
+		"change": func(row int) bool {
+			return row%6 == 0 && row != 0
+		},
+	})
+}
 func GetActor(ctx echo.Context) error {
 	actorId := ctx.Param("id")
 	if !bson.IsObjectIdHex(actorId) {
