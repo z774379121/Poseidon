@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,39 +38,27 @@
 </head>
 
 <body>
-<div class="container-fluid">
 
-<div class="row">
-{{range $index, $elem := .users}}
-{{if call $.change $index}}
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <br>
-        <br>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-2">
-        <img class="img-responsive center-block" alt="Bootstrap Image Preview"
-             src="{{ (index $.users $index).Avatar}}"/>
-        <div class="text-center">
-            <a href="api/v1/actor/{{$elem.Id_.Hex}}"><strong>{{$elem.Name}}</strong><strong>s</strong></a>
+<div class="container-fluid" id="info">
+    <div class="row">
+        <div class="col-lg-2">
+            <ul class="list-group">
+                <li class="list-group-item">姓名</li>
+                <li class="list-group-item">生日</li>
+                <li class="list-group-item">出生地</li>
+            </ul>
+        </div>
+        <div class="col-lg-8">
+            <ul class="list-group">
+                <li class="list-group-item">[[ items.Name ]]</li>
+                <li class="list-group-item">[[ items.BirthDay ]]</li>
+                <li class="list-group-item">[[ items.BirthPalce ]]</li>
+            </ul>
+        </div>
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+            <a href="api/v1/afilms/[[items.Id_]]"> <span class="label label-info">查看所有</span></a>
         </div>
     </div>
-{{else}}
-    <div class="col-md-2">
-        <img class="img-responsive center-block" alt="Bootstrap Image Preview"
-             src="{{ (index $.users $index).Avatar}}"/>
-        <div class="text-center">
-            <a href="actor/{{$elem.Id_.Hex}}" target="_blank"><strong>{{$elem.Name}}</strong></a>
-        </div>
-    </div>
-{{end}}
-
-{{end}}
-</div>
-
 </div>
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
@@ -80,20 +75,7 @@
             <ul class="nav navbar-nav">
                 <li class="active"><a href="/">Home</a></li>
                 <li><a href="#about">About</a></li>
-                <li><a href="/boot">查看所有</a></li>
-                <li class="pull-right">
-                    <form action="/bootlike" method="post" class="form-inline" role="form">
-
-                        <div class="form-group">
-                            <label class="sr-only" for="">查找</label>
-                            <input type="text" class="form-control" name="name" id="" placeholder="输入女优名字搜索">
-                        </div>
-
-
-
-                        <button type="submit" class="btn btn-primary">搜索</button>
-                    </form>
-                </li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -114,6 +96,37 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="http://how2j.cn/study/vue.min.js"></script>
+<script>
+    href = window.location.href;
+    new Vue({
+
+                delimiters: ['[[', ']]'],
+                el: '#info',
+                data: {
+                    items: Object
+                },
+                created: function () {
+                    var self = this;
+                    var url = href;
+                    fetch(url, {
+                        method : "POST"
+                    }).then(function (response) {
+                        response.json().then(function (jsonObject) {
+                            console.log(response.status);
+                            self.items = jsonObject;
+                            console.log(self.items);
+                        })
+                    }).catch(function (err) {
+                        console.log("Fetch错误:" + err);
+                    });
+                }
+            }
+    )
+
+</script>
 </body>
 </html>
 
+</body>
+</html>

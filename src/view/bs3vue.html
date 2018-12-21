@@ -31,44 +31,23 @@
 </head>
 
 <body>
-<div class="container-fluid">
+<div id="forthform" class="container-fluid">
 
-<div class="row">
-{{range $index, $elem := .users}}
-{{if call $.change $index}}
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <br>
-        <br>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-2">
-        <img class="img-responsive center-block" alt="Bootstrap Image Preview"
-             src="{{ (index $.users $index).Avatar}}"/>
-        <div class="text-center">
-            <a href="api/v1/actor/{{$elem.Id_.Hex}}"><strong>{{$elem.Name}}</strong><strong>s</strong></a>
+    <div class="row">
+        <div v-for="item in items" class="col-md-2">
+            <img class="img-responsive center-block" alt="Bootstrap Image Preview" src="item.Avator" />
+            <div class="text-center">
+                <strong>[[item.Name]]</strong>
+            </div>
         </div>
     </div>
-{{else}}
-    <div class="col-md-2">
-        <img class="img-responsive center-block" alt="Bootstrap Image Preview"
-             src="{{ (index $.users $index).Avatar}}"/>
-        <div class="text-center">
-            <a href="actor/{{$elem.Id_.Hex}}" target="_blank"><strong>{{$elem.Name}}</strong></a>
-        </div>
-    </div>
-{{end}}
-
-{{end}}
-</div>
 
 </div>
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -90,7 +69,6 @@
                         </div>
 
 
-
                         <button type="submit" class="btn btn-primary">搜索</button>
                     </form>
                 </li>
@@ -103,7 +81,8 @@
 
     <div class="starter-template">
         <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a
+        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text
+            and a
             mostly barebones HTML document.</p>
     </div>
 
@@ -114,6 +93,33 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="http://how2j.cn/study/vue.min.js"></script>
+<script>
+
+    new Vue({
+
+                delimiters: ['[[', ']]'],
+                el: '#forthform',
+                data: {
+                    items: []
+                },
+                created: function () {
+                    var self = this;
+                    var url = "/actorvue?page=1";
+                    fetch(url).then(function (response) {
+                        response.json().then(function (jsonObject) {
+                            console.log(response.status);
+                            self.items = jsonObject;
+                            console.log(self.items);
+                        })
+                    }).catch(function (err) {
+                        console.log("Fetch错误:" + err);
+                    });
+                }
+            }
+    )
+
+</script>
 </body>
 </html>
 

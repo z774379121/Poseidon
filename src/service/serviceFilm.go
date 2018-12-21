@@ -159,9 +159,9 @@ func FindHasCode(context echo.Context) error {
 	fmt.Println(code)
 	daoFilm := dao.NewDaoFilm()
 	film := daoFilm.FindByCode(code)
-	context.Response().Header().Set("Access-Control-Allow-Origin", "*")
-	context.Response().Header().Add("Access-Control-Allow-Headers", "Content-Type") //header的类型
-	context.Response().Header().Set("content-type", "application/json")
+	//context.Response().Header().Set("Access-Control-Allow-Origin", "*")
+	//context.Response().Header().Add("Access-Control-Allow-Headers", "Content-Type") //header的类型
+	//context.Response().Header().Set("content-type", "application/json")
 	if film == nil {
 		return context.JSON(http.StatusOK, map[string]interface{}{
 			"s": false})
@@ -169,4 +169,18 @@ func FindHasCode(context echo.Context) error {
 		return context.JSON(http.StatusOK, map[string]interface{}{
 			"s": true})
 	}
+}
+
+func GetActorFilms(ctx echo.Context) error {
+	actorId := ctx.Param("aid")
+	if !bson.IsObjectIdHex(actorId) {
+		return ctx.JSON(http.StatusNotFound, nil)
+	}
+
+	daoFilm := dao.NewDaoFilm()
+	films := daoFilm.FindByActorId(bson.ObjectIdHex(actorId))
+	if films != nil {
+		return ctx.JSON(http.StatusNotFound, nil)
+	}
+	return ctx.JSON(http.StatusOK, films)
 }

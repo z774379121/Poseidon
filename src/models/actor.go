@@ -21,24 +21,35 @@ const (
 	HCup
 )
 
+var Cmap = map[string]Cup{
+	"A": ACup,
+	"B": BCup,
+	"C": CCup,
+	"D": DCup,
+	"E": ECup,
+	"F": FCup,
+	"G": GCup,
+	"H": HCup,
+}
+
 func (this Cup) toString() string {
 	switch this {
 	case ACup:
-		return "ACup"
+		return "A"
 	case BCup:
-		return "BCup"
+		return "B"
 	case CCup:
-		return "CCup"
+		return "C"
 	case DCup:
-		return "DCup"
+		return "D"
 	case ECup:
-		return "ECup"
+		return "E"
 	case FCup:
-		return "FCup"
+		return "F"
 	case GCup:
-		return "GCup"
+		return "G"
 	case HCup:
-		return "HCup"
+		return "H"
 	default:
 		return ""
 	}

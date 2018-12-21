@@ -2,9 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"html/template"
-	"net/http"
-
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/urfave/cli"
@@ -13,6 +10,8 @@ import (
 	"github.com/z774379121/untitled1/src/dao/baseSession"
 	"github.com/z774379121/untitled1/src/service"
 	"github.com/z774379121/untitled1/src/setting"
+	"html/template"
+	"net/http"
 )
 
 var Web = cli.Command{
@@ -44,19 +43,6 @@ func runWeb(context *cli.Context) error {
 	echo.NotFoundHandler = func(c echo.Context) error {
 		return c.File("src/view/404.html")
 	}
-	//{
-	//	daoFilm := dao.NewDaoFilm()
-	//	daoActor := dao.NewDaoActor()
-	//	actor := daoActor.SelectByName("小川桃果")
-	//	obj := models.NewFilm()
-	//	obj.Name = "xxxx"
-	//	obj.Size = 1212
-	//	obj.ActorRef.Id = actor.Id_
-	//	ok := daoFilm.InsertOne(obj)
-	//	if !ok {
-	//		fmt.Println("插入失败")
-	//	}
-	//}
 	e := echo.New()
 	e.Static("/", "src/view")
 	e.File("/favicon.ico", "/images/play.ico")
@@ -73,38 +59,28 @@ func runWeb(context *cli.Context) error {
 	e.GET("/signUp", service.SignUpH)
 	e.POST("/login", service.Login)
 	e.GET("/login", service.LoginH)
+	// actorList and single info
 	e.GET("/boot", service.Boot)
 	e.POST("/bootlike", service.BootLike)
-	e.GET("/actor/:id", service.GetActor)
+	// actorDetail.
+	e.POST("/actor/:id", service.GetActor)
+	e.GET("/actor/:id", func(context echo.Context) error {
+		return context.File("src/view/actordetail.html")
+	})
 	e.GET("/actor", service.GetActorRegex)
 	e.GET("/film", service.FindHasCode)
+	e.GET("/actorvue", service.Bootvue)
+	//e.GET("/tvue", func(context echo.Context) error {
+	//	return context.File("src/view/bs3vue.html")
+	//})
 	api := e.Group("/api/vi")
 	{
 		api.GET("/actors/:name", service.FindActorFilm)
+		api.GET("/afilms/:aid", service.GetActorFilms)
+		api.GET("/actor/:id", service.GetActor)
 		api.GET("/film", service.FindHasCode)
-		api.GET("/search", func(context echo.Context) error {
-			name := context.QueryParam("keyword")
-			daoActor := dao.NewDaoActor()
-			actors := daoActor.SelectLikeByName(name)
-			data := len(*actors)
-			if data > 10 {
-				data = 10
-			}
-			z := make([]string, 0, data)
-			actor := *actors
-			for i := 0; i < data; i++ {
-				actor := actor[i]
-				z = append(z, actor.Name)
-			}
-			return context.JSON(http.StatusOK, map[string]interface{}{
-				"s":    z,
-				"data": true,
-			})
-		})
+		api.GET("/search", service.GetActorByHeadChar)
 	}
-	e.GET("/ss", func(context echo.Context) error {
-		return context.Render(http.StatusOK, "sear.html", nil)
-	})
 	e.GET("/search", func(context echo.Context) error {
 		name := context.QueryParam("keyword")
 		daoActor := dao.NewDaoActor()
@@ -124,7 +100,7 @@ func runWeb(context *cli.Context) error {
 			"data": true,
 		})
 	})
-	e.GET("/actors/:name", service.FindActorFilm)
+	e.GET("/films/:name", service.FindActorFilm)
 	admin := e.Group("/admin")
 	{
 		admin.Use(ServiceController)
@@ -213,3 +189,91 @@ func ServiceController(next echo.HandlerFunc) echo.HandlerFunc {
 		return next(context)
 	}
 }
+
+//var cc *opencc.OpenCC
+//
+//func Conver(s string) string {
+//	nText, err := cc.ConvertText(s)
+//	if err != nil {
+//		fmt.Println(err)
+//		return s
+//	}
+//	return nText
+//}
+//func ins() {
+//	fi, err := os.Open("/home/jj/Desktop/ag.txt")
+//	if err != nil {
+//		fmt.Printf("Error: %s\n", err)
+//		return
+//	}
+//	defer fi.Close()
+//	fmt.Println(fi.Name())
+//	cc, err = opencc.NewOpenCC("t2s")
+//	if err != nil {
+//		fmt.Println(err)
+//		return
+//	}
+//
+//	br := bufio.NewReader(fi)
+//	count := 0
+//	actors := make([]models.Actor, 10167)
+//	for {
+//		a, _, c := br.ReadLine()
+//		if c == io.EOF {
+//			break
+//		}
+//		actor := models.NewActor()
+//		allInfo := string(a)
+//		slice1 := strings.Split(allInfo, "|")
+//		actor.Avatar = slice1[0]
+//		other := slice1[1:]
+//		slice2 := strings.Split(strings.Join(other, ""), "##")
+//		name := slice2[0]
+//		other2 := slice2[1:]
+//		if len(other2) == 1 {
+//
+//		}
+//		actor.Name = Conver(name)
+//		detail := strings.Split(strings.Join(other2, ""), "#")
+//		for _, value := range detail {
+//			//fmt.Println(value)
+//			if strings.HasPrefix(value, "生日: ") {
+//				//fmt.Println("f")
+//
+//				birthDay := value[strings.Index(value, " ")+1:]
+//				btime, err := time.Parse("2006-01-02", birthDay)
+//				if err != nil {
+//					fmt.Println(err)
+//				}
+//				actor.BirthDay = btime
+//			} else if strings.HasPrefix(value, "身高: ") {
+//				fmt.Println("身高", value[strings.Index(value, " ")+1:])
+//				actor.Height, _ = strconv.Atoi(value[strings.Index(value, " ")+1 : len(value)-2])
+//			} else if strings.HasPrefix(value, "出生地: ") {
+//				fmt.Println("出生地", value[strings.Index(value, " ")+1:])
+//				actor.BirthPalce = value[strings.Index(value, " ")+1:]
+//			} else if strings.HasPrefix(value, "腰围: ") {
+//				fmt.Println("腰围", value[strings.Index(value, " ")+1:])
+//				actor.WaistLine, _ = strconv.Atoi(value[strings.Index(value, " ")+1 : len(value)-2])
+//			} else if strings.HasPrefix(value, "爱好: ") {
+//				fmt.Println("爱好", value[strings.Index(value, " ")+1:])
+//				actor.Habit = value[strings.Index(value, " ")+1:]
+//			} else if strings.HasPrefix(value, "胸围: ") {
+//				fmt.Println("胸围", value[strings.Index(value, " ")+1:])
+//				actor.Bust, _ = strconv.Atoi(value[strings.Index(value, " ")+1 : len(value)-2])
+//			} else if strings.HasPrefix(value, "臀围: ") {
+//				fmt.Println("臀围", value[strings.Index(value, " ")+1:])
+//				actor.HipCircumference, _ = strconv.Atoi(value[strings.Index(value, " ")+1 : len(value)-2])
+//			} else if strings.HasPrefix(value, "罩杯: ") {
+//				fmt.Println("罩杯", value[strings.Index(value, " ")+1:])
+//				actor.Cup = models.Cmap[value[strings.Index(value, " ")+1:]]
+//			}
+//		}
+//		actors[count] = *actor
+//		count += 1
+//	}
+//	fmt.Println(count)
+//	daoactor := dao.NewDaoActor()
+//	insertModels := daoactor.InsertModels(&actors)
+//	fmt.Println(insertModels)
+//}
