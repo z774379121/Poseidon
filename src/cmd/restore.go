@@ -3,15 +3,17 @@ package cmd
 import (
 	"fmt"
 	"github.com/Unknwon/cae/zip"
-	"github.com/lunny/log"
 	"github.com/mongodb/mongo-tools/common/db"
 	"github.com/mongodb/mongo-tools/common/options"
 	"github.com/mongodb/mongo-tools/mongorestore"
 	"github.com/urfave/cli"
 	"github.com/z774379121/untitled1/src/dao/baseSession"
+	"github.com/z774379121/untitled1/src/logger"
 	"github.com/z774379121/untitled1/src/setting"
 	"os"
 	"path"
+	"path/filepath"
+	"strconv"
 )
 
 var Restore = cli.Command{
@@ -41,7 +43,17 @@ func runRestore(ctx *cli.Context) {
 	baseSession.DBInit()
 
 	// unzip file
-	zipFile := ctx.String("file")
+	var zipFile string
+	if ctx.IsSet("file") {
+		zipFile = ctx.String("file")
+	} else {
+		zipFile = searchBackupFiles()
+		if zipFile == "" {
+			logger.Sugar.Error("没有找到备份文件,请检查当前目录或指定对应文件")
+			return
+		}
+	}
+	logger.Sugar.Info("将使用备份源:", zipFile)
 	tmpDir := os.TempDir()
 	zip.ExtractTo(zipFile, tmpDir)
 	archiveDir := path.Join(tmpDir, "gog")
@@ -77,7 +89,7 @@ func runRestore(ctx *cli.Context) {
 	toolOptions.Namespace = &options.Namespace{DB: setting.DBConfig.DatabaseName}
 	sessionProvider, err := db.NewSessionProvider(*toolOptions)
 	if err != nil {
-		fmt.Println(err)
+		logger.Sugar.Error(err)
 		return
 	}
 	restore := mongorestore.MongoRestore{
@@ -90,8 +102,33 @@ func runRestore(ctx *cli.Context) {
 	restore.TargetDirectory = dbFile
 	err = restore.Restore()
 	if err != nil {
-		fmt.Println(err)
+		logger.Sugar.Error(err)
 		return
 	}
-	log.Info("成功导入备份数据到 数据库: %s", setting.DBConfig.DatabaseName)
+	logger.Sugar.Infof("成功导入备份数据到 数据库: %s", setting.DBConfig.DatabaseName)
+}
+
+// 若未指定备份文件, 将使用当前目录下最新的.zip备份源文件
+func searchBackupFiles() (ret string) {
+	zips, err := filepath.Glob("*.zip")
+	if err != nil {
+		logger.Sugar.Info(err)
+		return
+	}
+	if len(zips) == 0 {
+		return
+	}
+	recently := 0
+	index := 0
+	for idx, z := range zips {
+		if len(z) == len("gogs-backup-20060102150405.zip") {
+			loopt, _ := strconv.Atoi(z[12:26])
+			if loopt > recently {
+				recently = loopt
+				index = idx
+			}
+		}
+	}
+	ret = zips[index]
+	return ret
 }

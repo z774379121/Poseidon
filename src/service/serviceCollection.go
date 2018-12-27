@@ -93,6 +93,6 @@ func GetCollectionUnderTag(ctx echo.Context) error {
 		return ctx.String(http.StatusBadRequest, "bad tagId")
 	}
 	daoCollection := dao.NewDaoCollection()
-	collections := daoCollection.SelectByTagIdAndUid(bson.ObjectIdHex(tag), user.Id_)
+	collections := daoCollection.SelectByTagIdsAndUid(user.Id_, []bson.ObjectId{bson.ObjectIdHex(tag)})
 	return ctx.JSON(http.StatusOK, collections)
 }

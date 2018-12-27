@@ -8,10 +8,13 @@ import (
 
 type daoCollection interface {
 	SelectByUid(uid bson.ObjectId) *[]models.Collection
-	SelectByTagIdAndUid(tid, uid bson.ObjectId) *[]models.Collection
+	SelectByTagIdsAndUid(uid bson.ObjectId, tags []bson.ObjectId) *[]models.Collection
+	RemoveTagByTagIdAndUidCollectionId(tid, uid, cid bson.ObjectId) bool
+	RemoveColletionTagRelation(tid, uid bson.ObjectId) bool
 	DeleteOneByIdAndUid(id, uid bson.ObjectId) bool
 	DeleteAllByTagIdAndUid(tid, uid bson.ObjectId) bool
 	InsertOne(collection *models.Collection) bool
+	AddTagByIdUidAndTagId(uid, tagId, id bson.ObjectId) bool
 }
 
 func NewDaoCollection() daoCollection {

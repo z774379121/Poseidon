@@ -22,20 +22,20 @@ const (
 )
 
 type Collection struct {
-	Id_        bson.ObjectId `bson:"_id"`
-	UserRef    mgo.DBRef     `bson:"user_ref"`
-	FilmRef    mgo.DBRef     `bson:"film_ref"`
-	Shapeness  Shapeness     `bson:"shapeness"`
-	LocalPath  string        `bson:"local_path"`
-	BTLink     string        `bson:"bt_link"`
-	BTFileName string        `bson:"bt_file_name"`
-	CreateTime time.Time     `bson:"create_time"`
-	IsDelete   bool          `bson:"is_delete"`
-	DeleteTime time.Time     `bson:"delete_time"`
-	UpdateTime time.Time     `bson:"update_time"`
-	Content    string        `bson:"content"`
-	Tag        *mgo.DBRef    `bson:"tag"`
-	IsFavorite bool          `bson:"is_favorite"`
+	Id_        bson.ObjectId   `bson:"_id"`
+	UserRef    mgo.DBRef       `bson:"user_ref"`
+	FilmRef    mgo.DBRef       `bson:"film_ref"`
+	Shapeness  Shapeness       `bson:"shapeness"`
+	LocalPath  string          `bson:"local_path"`
+	BTLink     string          `bson:"bt_link"`
+	BTFileName string          `bson:"bt_file_name"`
+	CreateTime time.Time       `bson:"create_time"`
+	IsDelete   bool            `bson:"is_delete"`
+	DeleteTime time.Time       `bson:"delete_time"`
+	UpdateTime time.Time       `bson:"update_time"`
+	Content    string          `bson:"content"`
+	Tags       []bson.ObjectId `bson:"tags"`
+	IsFavorite bool            `bson:"is_favorite"`
 }
 
 func NewColletion() *Collection {

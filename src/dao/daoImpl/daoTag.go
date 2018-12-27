@@ -40,3 +40,7 @@ func NewDaoTag() *daoTagImpl {
 func (this *daoTagImpl) InsertOne(tag *models.Tag) bool {
 	return this.BaseSession.InsertModel(tag)
 }
+
+func (this *daoTagImpl) DeleteOneByIdAndUid(id, uid bson.ObjectId) bool {
+	return this.Update(bson.M{modelsDefine.MDTag_Id_: id, modelsDefine.MDTag_UserRef_id: uid}, bson.M{baseSession.MGO_UPDATE_SET: bson.M{modelsDefine.MDTag_IsDeleted: true}}) == nil
+}

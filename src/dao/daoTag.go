@@ -9,6 +9,7 @@ import (
 type daoTag interface {
 	InsertOne(tag *models.Tag) bool
 	SeletTagsByUid(uid bson.ObjectId) *[]models.Tag
+	DeleteOneByIdAndUid(id, uid bson.ObjectId) bool
 	SeletTagByName(tagName string, uid bson.ObjectId) *models.Tag
 }
 

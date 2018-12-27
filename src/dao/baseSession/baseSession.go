@@ -27,6 +27,7 @@ const MGO_UPDATE_SET MgoOperators = "$set"
 const MGO_UPDATE_UNSET MgoOperators = "$unset"
 const MGO_UPDATE_INC MgoOperators = "$inc"
 
+const MGO_SELECT_All MgoOperators = "$all"
 const MGO_UPDATE_pushAll MgoOperators = "$pushAll"
 const MGO_UPDATE_push MgoOperators = "$push"
 const MGO_UPDATE_pull MgoOperators = "$pull"

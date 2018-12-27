@@ -8,6 +8,7 @@ import (
 	"github.com/mongodb/mongo-tools/mongodump"
 	"github.com/urfave/cli"
 	"github.com/z774379121/untitled1/src/dao/baseSession"
+	"github.com/z774379121/untitled1/src/logger"
 	"github.com/z774379121/untitled1/src/setting"
 	"io/ioutil"
 	"os"
@@ -113,7 +114,7 @@ func backup(ctx *cli.Context) {
 		return
 	}
 	os.RemoveAll(tmpDir)
-	fmt.Println("ok", archive)
+	logger.Sugar.Info("ok", archive)
 
 	return
 }
