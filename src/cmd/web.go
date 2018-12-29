@@ -160,6 +160,7 @@ func runWeb(context *cli.Context) error {
 		u.GET("/tags", service.GetTags)
 		u.GET("/tag/:tname", service.GetTagDetail)
 		u.POST("/tag", service.NewTag)
+		u.DELETE("/tag/:td", service.DeleteOneTag)
 
 		u.GET("/Collections", service.GetColletions)
 		u.GET("/Collection", service.GetCollectionUnderTag)

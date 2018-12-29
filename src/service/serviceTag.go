@@ -6,6 +6,7 @@ import (
 	"github.com/z774379121/untitled1/src/controller"
 	"github.com/z774379121/untitled1/src/dao"
 	"github.com/z774379121/untitled1/src/models"
+	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"time"
 )
@@ -58,6 +59,10 @@ func NewTag(ctx echo.Context) error {
 	user := controller.GetUser(uid)
 	daoTag := dao.NewDaoTag()
 	fmt.Println(newFtag.Name)
+	count := daoTag.SelectCountByUid(user.Id_)
+	if count >= 10 {
+		return echo.NewHTTPError(http.StatusBadRequest, "最多同时拥有10个标签")
+	}
 	tag := daoTag.SeletTagByName(newFtag.Name, user.Id_)
 	fmt.Println(tag)
 	if tag != nil {
@@ -71,4 +76,24 @@ func NewTag(ctx echo.Context) error {
 		return ctx.String(http.StatusBadRequest, "插入失败")
 	}
 	return ctx.Redirect(http.StatusFound, "/user/tags")
+}
+
+func DeleteOneTag(ctx echo.Context) error {
+	tag := ctx.Param("tname")
+	fmt.Println(tag)
+	if !bson.IsObjectIdHex(tag) {
+		return echo.ErrValidatorNotRegistered
+	}
+	uid := ctx.Get("token").(string)
+	user := controller.GetUser(uid)
+	daoTag := dao.NewDaoTag()
+	target := daoTag.SelectByUidAndId(user.Id_, bson.ObjectIdHex(tag))
+	if target == nil {
+		return echo.ErrNotFound
+	}
+	if done := daoTag.DeleteOneByIdAndUid(bson.ObjectIdHex(tag), user.Id_); !done {
+		return echo.NewHTTPError(http.StatusBadRequest, "删除失败")
+	}
+	return ctx.String(http.StatusOK, "删除成功")
+
 }

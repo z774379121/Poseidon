@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/labstack/echo"
 	"github.com/z774379121/untitled1/src/dao"
+	"github.com/z774379121/untitled1/src/logger"
 	"github.com/z774379121/untitled1/src/models"
 	"gopkg.in/mgo.v2/bson"
 	"log"
@@ -95,4 +96,34 @@ func GetCollectionUnderTag(ctx echo.Context) error {
 	daoCollection := dao.NewDaoCollection()
 	collections := daoCollection.SelectByTagIdsAndUid(user.Id_, []bson.ObjectId{bson.ObjectIdHex(tag)})
 	return ctx.JSON(http.StatusOK, collections)
+}
+
+type RemoveCTagOpt struct {
+	tagId string `form:"tag_id"`
+	colId string `form:"col_id"`
+}
+
+func RemoveCollectionTag(ctx echo.Context) error {
+	token := ctx.Get("token")
+	daoUser := dao.NewDaoUser()
+	user := daoUser.SelectByAppToken(token.(string))
+	if user == nil {
+		return ctx.String(http.StatusBadRequest, "bad uid")
+	}
+	opt := new(RemoveCTagOpt)
+	if err := ctx.Bind(opt); err != nil {
+		logger.Sugar.Error(err)
+	}
+	if !bson.IsObjectIdHex(opt.tagId) || !bson.IsObjectIdHex(opt.colId) {
+		return echo.ErrBadRequest
+	}
+	daoCol := dao.NewDaoCollection()
+	if done := daoCol.RemoveTagByTagIdAndUidCollectionId(bson.ObjectIdHex(opt.tagId), user.Id_, bson.ObjectIdHex(opt.colId)); !done {
+		logger.Sugar.Infow("删除失败",
+			"cid", opt.colId,
+			"tid", opt.tagId,
+			"uid", user.Id_)
+		return echo.NewHTTPError(http.StatusBadRequest, "删除失败")
+	}
+	return ctx.String(http.StatusOK, "移除标签成功")
 }

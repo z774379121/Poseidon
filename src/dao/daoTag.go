@@ -10,6 +10,8 @@ type daoTag interface {
 	InsertOne(tag *models.Tag) bool
 	SeletTagsByUid(uid bson.ObjectId) *[]models.Tag
 	DeleteOneByIdAndUid(id, uid bson.ObjectId) bool
+	SelectCountByUid(uid bson.ObjectId) int
+	SelectByUidAndId(uid, id bson.ObjectId) *models.Tag
 	SeletTagByName(tagName string, uid bson.ObjectId) *models.Tag
 }
 
